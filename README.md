@@ -1,8 +1,40 @@
-<span style="color:red">🤖config collector telegram bot🤖</span>
+<img width="2125" height="575" alt="github-header-banner" src="https://github.com/user-attachments/assets/87f2ba08-f4bd-4e12-9698-4c1b6e6d2544" />
 
-##what can do this bot?
-1.collect v2ray configs(vmess,vless,trojan,ss)
-2.collect SlipNet configs
-3.collect Telegram proxies(Mtproto)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=39D0DBC7&width=500&lines=🤖+Config+Collector+Telegram+Bot;🚀+Fast+%26+Powerful+Scraper;⚡+Get+Fresh+Configs+Every+Day!)](https://git.io/typing-svg)
 
-telegram bot link: [t.me/configCollectore_Bot]
+<div style="display:flex; gap:5px; flex-wrap:wrap; directional:rtl;">
+<p dir="rtl">
+🔭 <b>درباره پروژه:</b> این یک ربات هوشمند تلگرام برای جمع‌آوری و آپدیت خودکار انواع کانفیگ و پروکسی است. <br>
+🎯 <b>هدف:</b> دسترسی سریع و بی‌واسطه به کانفیگ‌های رایگان و باکیفیت. <br>
+⚡ <b>زبان توسعه:</b> توسعه‌یافته با پایتون و کتابخانه‌های قدرتمند اسکرپینگ. <br>
+🌐 <b>لینک ربات در تلگرام:</b> <a href="https://t.me/configCollectore_Bot">t.me/configCollectore_Bot</a> <br>
+</p>
+</div>
+
+## 🛠️ قابلیت‌های اصلی ربات (Features)
+
+این ربات به صورت مداوم منابع مختلف را بررسی کرده و خروجی‌های زیر را جمع‌آوری می‌کند:
+
+| نوع پروتکل / کانفیگ | توضیحات | وضعیت |
+| :--- | :--- | :---: |
+| **V2Ray Configs** | جمع‌آوری کانفیگ‌های Vmess, Vless, Trojan, Shadowsocks | 🟢 فعال |
+| **SlipNet Configs** | اسکرپ و دریافت کانفیگ‌های مخصوص اسلیپ‌نت | 🟢 فعال |
+| **Telegram Proxies** | دریافت جدیدترین پروکسی‌های پرسرعت MTProto | 🟢 فعال |
+
+---
+
+## 🌐 راه‌های ارتباطی و ربات:
+[![Telegram Bot](https://img.shields.io/badge/Telegram_Bot-configCollectore__Bot-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/configCollectore_Bot)
+
+## 💻 تکنولوژی‌های استفاده شده (Tech Stack):
+[![My Skills](https://skillicons.dev/icons?i=py,github,git,vscode,regex,docker)](https://skillicons.dev)
+
+---
+
+## 🚀 نحوه راه‌اندازی سورس (برای توسعه‌دهندگان)
+
+اگر می‌خواهید این پروژه را روی سرور خودتان اجرا کنید:
+
+۱. پروژه را کلون کنید:
+```bash
+git clone [https://github.com/YourUsername/CONFIG-TELEGRAM.git](https://github.com/YourUsername/CONFIG-TELEGRAM.git)
