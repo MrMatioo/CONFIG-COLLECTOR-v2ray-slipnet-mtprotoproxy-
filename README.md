@@ -8,7 +8,7 @@
 ### ⚡ اطلاعات فنی پروژه
 
 * 🛠️ **زبان توسعه:** TypeScript (تایپ اسکریپت)
-* 📦 **کتابخانه‌های اصلی:** Telegraf & GrammyJs
+* 📦 **کتابخانه‌های اصلی:** Telegram & GrammyJs
 * 🌐 **لینک ربات در تلگرام:** [t.me/configCollectore_Bot](https://t.me/configCollectore_Bot)
 
 ---
