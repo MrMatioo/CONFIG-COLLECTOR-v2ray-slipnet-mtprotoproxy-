@@ -1,4 +1,4 @@
-#ربات جمع کننده کانفیگ
+# ربات جمع کننده کانفیگ
 
 <div style="display:flex; gap:5px; flex-wrap:wrap; directional:rtl;">
 <p dir="rtl">
