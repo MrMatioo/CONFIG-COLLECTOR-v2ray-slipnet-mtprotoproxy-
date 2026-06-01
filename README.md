@@ -16,7 +16,7 @@
 | نوع پروتکل / کانفیگ | توضیحات | وضعیت |
 | :--- | :--- | :---: |
 | **V2Ray Configs** | جمع‌آوری کانفیگ‌های Vmess, Vless, Trojan, Shadowsocks | 🟢 فعال |
-| **SlipNet Configs** | اسکرپ و دریافت کانفیگ‌های مخصوص اسلیپ‌نت | 🟢 فعال |
+| **SlipNet Configs** |   دریافت کانفیگ‌های مخصوص اسلیپ‌نت | 🟢 فعال |
 | **Telegram Proxies** | دریافت جدیدترین پروکسی‌های پرسرعت MTProto | 🟢 فعال |
 
 ---
@@ -25,5 +25,5 @@
 [![Telegram Bot](https://img.shields.io/badge/Telegram_Bot-configCollectore__Bot-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/configCollectore_Bot)
 
 ## 💻 تکنولوژی‌های استفاده شده (Tech Stack):
-[![My Skills](https://skillicons.dev/icons?i=js)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=js,ts,nodejs)](https://skillicons.dev)
 
