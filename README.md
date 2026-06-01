@@ -1,4 +1,4 @@
-# ربات جمع کننده کانفیگ
+# <h1 align="center" style="color: #39D0DB; font-size: 40px; font-weight: bold;">🤖 ربات جمع کننده کانفیگ 🤖</h1>
 
 <div style="display:flex; gap:5px; flex-wrap:wrap; directional:rtl;">
 <p dir="rtl">
