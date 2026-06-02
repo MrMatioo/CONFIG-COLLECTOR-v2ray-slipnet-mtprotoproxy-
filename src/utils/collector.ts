@@ -5,10 +5,11 @@ dotenv.config();
 
 let targetChannels: string[];
 
-const defaultChannels = [
+const defaultChannels: string[] = [
   "@ProxyMtAlpha",
   "@vpn_jet7",
   "@SPARTAN_YT",
+  "@iMTProto",
   "@v2dogs_n",
   "@v2dogs_gp",
   "@vasl_bashim",
@@ -24,38 +25,44 @@ const defaultChannels = [
   "@configshere",
   "@virous_config",
   "@SlipNet0",
+  "@v2rayngvpn",
 ];
+
+function shuffleArray<T>(arr: T[]): T[] {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
 
 try {
   const envChannels = process.env.TARGET_CHANNELS;
   if (envChannels && envChannels.trim() !== "") {
     targetChannels = JSON.parse(envChannels);
-    if (!Array.isArray(targetChannels)) {
+    if (!Array.isArray(targetChannels))
       throw new Error("TARGET_CHANNELS is not an array");
-    }
   } else {
-    console.warn("TARGET_CHANNELS not set, using default channels.");
     targetChannels = defaultChannels;
   }
 } catch (err) {
-  console.error(
-    "Failed to parse TARGET_CHANNELS, using default channels.",
-    err,
-  );
+  console.warn("Failed to parse TARGET_CHANNELS, using default channels.");
   targetChannels = defaultChannels;
 }
 
 const BOT_USERNAME = process.env.BOT_USERNAME || "@unknown_bot";
 
-const rules = [
+interface Rule {
+  name: string;
+  prefixes: string[];
+  file: string;
+}
+
+const rules: Rule[] = [
   {
     name: "v2ray",
-    prefixes: ["vmess", "vless", "trojan", "ss:"],
+    prefixes: ["vmess://", "vless://", "trojan://", "ss://"],
     file: "./v2ray_configs.txt",
   },
   {
     name: "proxy",
-    prefixes: ["tg://", "https://t.me/proxy", "mtproto://", "MTProto:"],
+    prefixes: ["https://t.me/proxy?server=", "tg://proxy?server"],
     file: "./proxy.txt",
   },
   {
@@ -65,25 +72,58 @@ const rules = [
   },
 ];
 
-export const collector = async (client: TelegramClient) => {
+export const collector = async (client: TelegramClient): Promise<void> => {
   const sets = new Map<string, Set<string>>();
   for (const r of rules) {
     sets.set(r.name, new Set<string>());
   }
 
-  for (const channel of targetChannels) {
+  const shuffledChannels = shuffleArray(targetChannels);
+  console.log("Channel order (random):", shuffledChannels);
+
+  for (const channel of shuffledChannels) {
     try {
-      const messages = await client.getMessages(channel, { limit: 6 });
+      const messages = await client.getMessages(channel, { limit: 3 });
+      // const channelLastActivity = messages[0]?.date.toFixed();
+      // console.log(
+      //   `Fetching from ${channel}, last activity: ${channelLastActivity}`,
+      // );
+
       for (const msg of messages) {
-        if (msg.message && typeof msg.message === "string") {
-          const words = msg.message.split(/\s+/);
+        if (msg?.message && typeof msg.message === "string") {
+          const words = msg.message.split(/[\s\n\r]+/);
+
           for (const word of words) {
             const clean = word.trim();
             if (!clean) continue;
+
             for (const r of rules) {
-              if (r.prefixes.some((p) => clean.startsWith(p))) {
+              const isMatch = r.prefixes.some((p) =>
+                clean.toLowerCase().startsWith(p.toLowerCase()),
+              );
+
+              if (isMatch) {
                 sets.get(r.name)?.add(clean);
                 break;
+              }
+            }
+          }
+
+          if (msg.entities && msg.entities.length > 0) {
+            for (const entity of msg.entities) {
+              if (entity.className === "MessageEntityTextUrl" && entity.url) {
+                const url = entity.url.trim();
+
+                for (const r of rules) {
+                  const isMatch = r.prefixes.some((p) =>
+                    url.toLowerCase().startsWith(p.toLowerCase()),
+                  );
+
+                  if (isMatch) {
+                    sets.get(r.name)?.add(url);
+                    break;
+                  }
+                }
               }
             }
           }
@@ -105,14 +145,28 @@ export const collector = async (client: TelegramClient) => {
     second: "2-digit",
     hour12: false,
   });
-  const footer = `\n\n\n[ Last update: ${formattedDateTime} | Bot: ${BOT_USERNAME} ]`;
 
   for (const r of rules) {
     const configSet = sets.get(r.name);
     if (configSet && configSet.size > 0) {
-      let content = Array.from(configSet).join("\n\n\n");
-      content += footer;
-      fs.writeFileSync(r.file, content, "utf-8");
+      const header =
+        `╔══════════════════════╗\n` +
+        ` 🚀 ${r.name.toUpperCase()} COLLECTOR\n` +
+        ` 📊 Total: ${configSet.size}\n` +
+        ` 📅 ${formattedDateTime}\n` +
+        `╚══════════════════════╝\n\n`;
+
+      const body = Array.from(configSet).join("\n──────────────────────\n");
+
+      const footer =
+        `\n\n╔══════════════════════╗\n` +
+        ` 🤖 Bot: ${BOT_USERNAME}\n` +
+        ` ✨ Enjoy Free Connection\n` +
+        `╚══════════════════════╝`;
+
+      const finalContent = header + body + footer;
+
+      fs.writeFileSync(r.file, finalContent, "utf-8");
       console.log(`${r.name}: ${configSet.size} config(s) saved`);
     } else {
       console.log(`${r.name}: no config found`);
