@@ -1,5 +1,6 @@
 import { Bot, InlineKeyboard, InputFile, GrammyError, HttpError } from "grammy";
 import mongoose from "mongoose";
+import http from "http";
 import fs from "fs";
 import path from "path";
 import { UserModel } from "./schemas/userSchema.js";
@@ -631,5 +632,18 @@ async function main() {
   );
   sendOnlineStatus().catch(console.error);
 }
+
+// یک سرور فیک برای زنده نگه داشتن پورت در رندر
+const PORT = process.env.PORT || 3000;
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("Bot is running...\n");
+  })
+  .listen(PORT, () => {
+    console.log(
+      `Fake web server listening on port ${PORT} to bypass Render port scan.`,
+    );
+  });
 
 main().catch(console.error);
