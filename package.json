@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/bot.js",
-    "dev": "tsc --watch & nodemon dist/bot.js"
+    "Dev": "tsc --watch & nodemon dist/bot.js"
   },
   "keywords": [],
   "author": "",
