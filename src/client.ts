@@ -1,13 +1,11 @@
 import { TelegramClient } from "telegram";
-import { StringSession } from "telegram/sessions/StringSession.js";
-import fs from "fs";
+import { StringSession } from "telegram/sessions/index.js";
 import readline from "readline";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const SESSION_FILE = "./session.txt";
 let memoizedClient: TelegramClient | null = null;
-const SESSION = process.env.SESSIONSTRING;
+const SESSION = process.env.SESSIONSTRING || "";
 
 function askQuestion(query: string): Promise<string> {
   const rl = readline.createInterface({
@@ -22,17 +20,6 @@ function askQuestion(query: string): Promise<string> {
   });
 }
 
-// function getStringSession(): string {
-//   if (fs.existsSync(SESSION_FILE)) {
-//     return fs.readFileSync(SESSION_FILE, "utf-8").trim();
-//   }
-//   return "";
-// }
-
-function saveStringSession(session: string): void {
-  fs.writeFileSync(SESSION_FILE, session, "utf-8");
-}
-
 export async function getTelegramClient(): Promise<TelegramClient> {
   if (memoizedClient) return memoizedClient;
 
@@ -42,10 +29,10 @@ export async function getTelegramClient(): Promise<TelegramClient> {
     throw new Error("API_ID or API_HASH is missing in .env config");
   }
 
-  // const sessionStr = getStringSession();
-  // const session = new StringSession(SESSION);
+  // ایجاد کلس استاندار سشن به صورت آبجکت
+  const stringSession = new StringSession(SESSION);
 
-  const client = new TelegramClient(SESSION as string, apiId, apiHash, {
+  const client = new TelegramClient(stringSession, apiId, apiHash, {
     connectionRetries: 5,
   });
 
@@ -57,7 +44,11 @@ export async function getTelegramClient(): Promise<TelegramClient> {
   });
 
   const savedSession = client.session.save() as unknown as string;
-  saveStringSession(savedSession);
+
+  console.log("-----------------------------------------");
+  console.log("New Session String Created:");
+  console.log(savedSession);
+  console.log("-----------------------------------------");
 
   console.log("Telegram client connected");
   memoizedClient = client;
