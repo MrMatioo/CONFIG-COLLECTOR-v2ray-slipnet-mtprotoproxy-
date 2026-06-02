@@ -22,12 +22,12 @@ function askQuestion(query: string): Promise<string> {
   });
 }
 
-function getStringSession(): string {
-  if (fs.existsSync(SESSION_FILE)) {
-    return fs.readFileSync(SESSION_FILE, "utf-8").trim();
-  }
-  return "";
-}
+// function getStringSession(): string {
+//   if (fs.existsSync(SESSION_FILE)) {
+//     return fs.readFileSync(SESSION_FILE, "utf-8").trim();
+//   }
+//   return "";
+// }
 
 function saveStringSession(session: string): void {
   fs.writeFileSync(SESSION_FILE, session, "utf-8");
@@ -42,10 +42,10 @@ export async function getTelegramClient(): Promise<TelegramClient> {
     throw new Error("API_ID or API_HASH is missing in .env config");
   }
 
-  const sessionStr = getStringSession();
-  const session = new StringSession(sessionStr);
+  // const sessionStr = getStringSession();
+  // const session = new StringSession(SESSION);
 
-  const client = new TelegramClient(session, apiId, apiHash, {
+  const client = new TelegramClient(SESSION as string, apiId, apiHash, {
     connectionRetries: 5,
   });
 
