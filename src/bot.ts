@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard, InputFile } from "grammy";
+import { Bot, InlineKeyboard, InputFile, GrammyError, HttpError } from "grammy";
 import mongoose from "mongoose";
 import fs from "fs";
 import path from "path";
@@ -28,17 +28,46 @@ if (ADMIN_ID === 0) {
 }
 
 const bot = new Bot(BOT_TOKEN);
-bot.catch((err: any) => {
-  console.error("Bot Error:", err.message || err);
+
+// 🔥 سپر بلای ربات: هندلر سراسری و پیشرفته خطا جهت جلوگیری از خاموش شدن ربات تحت هر شرایطی
+bot.catch((err) => {
+  const ctx = err.ctx;
+  console.error(
+    `[Grammy-Catch] Error while handling update ${ctx.update.update_id}:`,
+  );
+  const e = err.error;
+
+  if (e instanceof GrammyError) {
+    // نادیده گرفتن ارور معروف تلگرام وقتی محتوای پیام ویرایش شده فرقی با قبل ندارد
+    if (e.description.includes("message is not modified")) {
+      return console.log(
+        "⚠️ تلگرام: پیام ویرایش شده تغییری نکرده بود. نادیده گرفته شد.",
+      );
+    }
+    // نادیده گرفتن ارور کاربرانی که ربات را بلاک کرده‌اند
+    if (
+      e.description.includes("bot was blocked by the user") ||
+      e.description.includes("chat not found")
+    ) {
+      return console.log(
+        `⚠️ کاربر ربات را بلاک کرده یا چت یافت نشد. آیدی چت: ${ctx.chat?.id}`,
+      );
+    }
+    console.error("❌ خطای درخواست API تلگرام:", e.description);
+  } else if (e instanceof HttpError) {
+    console.error("❌ خطای شبکه و اتصال به سرورهای تلگرام (HTTP):", e);
+  } else {
+    console.error("❌ خطای ناشناخته در هسته ربات:", e);
+  }
 });
 
 async function sendLongText(ctx: any, text: string) {
   const MAX_LEN = 4096;
   if (text.length <= MAX_LEN) {
-    await ctx.reply(text);
+    await ctx.reply(text).catch(() => {});
   } else {
     for (let i = 0; i < text.length; i += MAX_LEN) {
-      await ctx.reply(text.slice(i, i + MAX_LEN));
+      await ctx.reply(text.slice(i, i + MAX_LEN)).catch(() => {});
     }
   }
 }
@@ -49,18 +78,26 @@ async function sendTempMessage(ctx: any): Promise<number | null> {
       const stickerMsg = await ctx.replyWithSticker(STICKER_FILE_ID);
       return stickerMsg.message_id;
     } catch {
+      try {
+        const tempMsg = await ctx.reply(
+          "⏳ <b>لطفاً چند لحظه صبر کنید...</b>\nدر حال پردازش درخواست شما هستیم.",
+          { parse_mode: "HTML" },
+        );
+        return tempMsg.message_id;
+      } catch {
+        return null;
+      }
+    }
+  } else {
+    try {
       const tempMsg = await ctx.reply(
         "⏳ <b>لطفاً چند لحظه صبر کنید...</b>\nدر حال پردازش درخواست شما هستیم.",
         { parse_mode: "HTML" },
       );
       return tempMsg.message_id;
+    } catch {
+      return null;
     }
-  } else {
-    const tempMsg = await ctx.reply(
-      "⏳ <b>لطفاً چند لحظه صبر کنید...</b>\nدر حال پردازش درخواست شما هستیم.",
-      { parse_mode: "HTML" },
-    );
-    return tempMsg.message_id;
   }
 }
 
@@ -142,14 +179,17 @@ let adminReplyMode = new Map<number, number>();
 
 bot.command("start", async (ctx) => {
   if (ctx.chat?.type !== "private") {
-    await ctx.reply(
-      "❌ <b>دسترسی محدود!</b>\nلطفاً برای استفاده از امکانات ربات، به چت خصوصی من مراجعه کنید.",
-      { parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        "❌ <b>دسترسی محدود!</b>\nلطفاً برای استفاده از امکانات ربات، به چت خصوصی من مراجعه کنید.",
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
     return;
   }
   const user = ctx.from;
-  if (!user) return ctx.reply("❌ اطلاعات کاربری شما یافت نشد.");
+  if (!user)
+    return ctx.reply("❌ اطلاعات کاربری شما یافت نشد.").catch(() => {});
 
   supportMode.delete(user.id);
   adminReplyMode.delete(user.id);
@@ -198,26 +238,38 @@ bot.command("start", async (ctx) => {
     saveUserToDB(user).catch(console.error);
   } catch (error: any) {
     console.error("Error checking membership:", error.message || error);
-    await ctx.reply(
-      "⚠️ <b>اختلال موقت!</b>\nخطایی در بررسی عضویت شما رخ داده است. لطفاً چند لحظه دیگر دوباره تلاش کنید.",
-      { parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        "⚠️ <b>اختلال موقت!</b>\nخطایی در بررسی عضویت شما رخ داده است. لطفاً چند لحظه دیگر دوباره تلاش کنید.",
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
   }
 });
 
 bot.command("update", async (ctx) => {
   if (ctx.chat?.type !== "private") return;
   if (ctx.from?.id !== ADMIN_ID)
-    return ctx.reply("⛔ شما مجاز به اجرای این دستور نیستید.");
-  await ctx.reply(
-    "🔄 <b>در حال جمع‌آوری و به‌روزرسانی دستی کانفیگ‌ها...</b>\nلطفاً شکیبا باشید.",
-    { parse_mode: "HTML" },
-  );
-  await updateConfigs();
-  await ctx.reply(
-    "✅ <b>به‌روزرسانی با موفقیت انجام شد!</b>\nآخرین کانفیگ‌ها در فایل‌ها ذخیره شدند.",
-    { parse_mode: "HTML" },
-  );
+    return ctx.reply("⛔ شما مجاز به اجرای این دستور نیستید.").catch(() => {});
+
+  await ctx
+    .reply(
+      "🔄 <b>در حال جمع‌آوری و به‌روزرسانی دستی کانفیگ‌ها...</b>\nلطفاً شکیبا باشید.",
+      { parse_mode: "HTML" },
+    )
+    .catch(() => {});
+
+  try {
+    await updateConfigs();
+    await ctx
+      .reply(
+        "✅ <b>به‌روزرسانی با موفقیت انجام شد!</b>\nآخرین کانفیگ‌ها در فایل‌ها ذخیره شدند.",
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
+  } catch (e) {
+    console.error("Manual update failed:", e);
+  }
 });
 
 async function sendConfigFile(ctx: any, filePath: string, configName: string) {
@@ -248,15 +300,19 @@ async function sendConfigFile(ctx: any, filePath: string, configName: string) {
       `🔹 فایل بالا شامل لیست کامل کانفیگ‌ها است.\n\n` +
       `📢 @${ctx.me.username}`;
 
-    await ctx.replyWithDocument(new InputFile(filePath), {
-      caption: graphicCaption,
-      parse_mode: "HTML",
-    });
+    await ctx
+      .replyWithDocument(new InputFile(filePath), {
+        caption: graphicCaption,
+        parse_mode: "HTML",
+      })
+      .catch(() => {});
   } else {
-    await ctx.reply(
-      `⚙️ <b>فایل کانفیگ ${configName} در حال حاضر آماده نیست!</b>\nلطفاً دقایقی دیگر مجدداً تلاش کنید یا با پشتیبانی در ارتباط باشید.`,
-      { parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        `⚙️ <b>فایل کانفیگ ${configName} در حال حاضر آماده نیست!</b>\nلطفاً دقایقی دیگر مجدداً تلاش کنید یا با پشتیبانی در ارتباط باشید.`,
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
   }
 }
 
@@ -264,22 +320,22 @@ async function sendProxyText(ctx: any, filePath: string) {
   if (fs.existsSync(filePath)) {
     const content = fs.readFileSync(filePath, "utf-8");
     if (!content.trim()) {
-      await ctx.reply(
-        "🔌 <b>پروکسی فعال و جدیدی یافت نشد!</b>\nبه زودی لیست پروکسی‌ها آپدیت می‌شود.",
-        {
-          parse_mode: "HTML",
-        },
-      );
+      await ctx
+        .reply(
+          "🔌 <b>پروکسی فعال و جدیدی یافت نشد!</b>\nبه زودی لیست پروکسی‌ها آپدیت می‌شود.",
+          { parse_mode: "HTML" },
+        )
+        .catch(() => {});
       return;
     }
     await sendLongText(ctx, content);
   } else {
-    await ctx.reply(
-      "⚠️ <b>لیست پروکسی‌ها یافت نشد!</b>\nلطفاً کمی بعد دوباره امتحان کنید.",
-      {
-        parse_mode: "HTML",
-      },
-    );
+    await ctx
+      .reply(
+        "⚠️ <b>لیست پروکسی‌ها یافت نشد!</b>\nلطفاً کمی بعد دوباره امتحان کنید.",
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
   }
 }
 
@@ -293,7 +349,7 @@ async function withTempMessage(ctx: any, action: () => Promise<void>) {
 }
 
 bot.callbackQuery("getV2ray", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
     const filePath = path.resolve("./v2ray_configs.txt");
     await sendConfigFile(ctx, filePath, "v2ray");
@@ -301,7 +357,7 @@ bot.callbackQuery("getV2ray", async (ctx) => {
 });
 
 bot.callbackQuery("getSlipnet", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
     const filePath = path.resolve("./slipnet_configs.txt");
     await sendConfigFile(ctx, filePath, "slipnet");
@@ -309,7 +365,7 @@ bot.callbackQuery("getSlipnet", async (ctx) => {
 });
 
 bot.callbackQuery("getProxy", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
     const filePath = path.resolve("./proxy.txt");
     await sendProxyText(ctx, filePath);
@@ -317,39 +373,45 @@ bot.callbackQuery("getProxy", async (ctx) => {
 });
 
 bot.callbackQuery("help", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
-    await ctx.reply(
-      `💡 <b>راهنمای استفاده از ربات</b>\n\n` +
-        `🔹 برای دسترسی به بخش‌های ربات، حتماً باید در کانال ${REQUIRED_CHANNEL} عضو بمانید.\n` +
-        `🔹 کانفیگ‌های <b>v2ray</b> و <b>slipnet</b> جهت سهولت در کپیِ یکجا، به صورت فایل متنی ارسال می‌شوند.\n` +
-        `🔹 <b>پروکسی‌ها</b> به صورت متن مستقیم فرستاده می‌شوند تا با یک کلیک متصل شوید.\n` +
-        `🔄 تمام خروجی‌ها <b>هر یک ساعت یک‌بار</b> به صورت کاملاً خودکار آپدیت می‌شوند.\n\n` +
-        `📌 <i>جهت بازگشت به منوی اصلی دستور /start را بفرستید.</i>`,
-      { parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        `💡 <b>راهنمای استفاده از ربات</b>\n\n` +
+          `🔹 برای دسترسی به بخش‌های ربات، حتماً باید در کانال ${REQUIRED_CHANNEL} عضو بمانید.\n` +
+          `🔹 کانفیگ‌های <b>v2ray</b> و <b>slipnet</b> جهت سهولت در کپیِ یکجا، به صورت فایل متنی ارسال می‌شوند.\n` +
+          `🔹 <b>پروکسی‌ها</b> به صورت متن مستقیم فرستاده می‌شوند تا با یک کلیک متصل شوید.\n` +
+          `🔄 تمام خروجی‌ها <b>هر یک ساعت یک‌بار</b> به صورت کاملاً خودکار آپدیت می‌شوند.\n\n` +
+          `📌 <i>جهت بازگشت به منوی اصلی دستور /start را بفرستید.</i>`,
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
   });
 });
 
 bot.callbackQuery("channel", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
-    await ctx.reply(
-      `📢 <b>کانال رسمی ما</b>\n\nبرای باخبر شدن از آخرین اخبار ربات، قطعی‌ها و دریافت اطلاعات بیشتر به کانال ما بپیوندید:\n👉 ${REQUIRED_CHANNEL}`,
-      { reply_markup: channelLinkKeyboard, parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        `📢 <b>کانال رسمی ما</b>\n\nبرای باخبر شدن از آخرین اخبار ربات، قطعی‌ها و دریافت اطلاعات بیشتر به کانال ما بپیوندید:\n👉 ${REQUIRED_CHANNEL}`,
+        { reply_markup: channelLinkKeyboard, parse_mode: "HTML" },
+      )
+      .catch(() => {});
   });
 });
 
 bot.callbackQuery("support", async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   await withTempMessage(ctx, async () => {
     const userId = ctx.from.id;
     supportMode.add(userId);
-    await ctx.reply(
-      `🎧 <b>مرکز پشتیبانی آنلاین</b>\n\nشما وارد حالت ارتباط با اپراتور شدید.\n\n✍️ لطفاً پیام، انتقاد یا مشکل خود را در <u>یک پیام متنی</u> ارسال کنید. پیام شما مستقیماً به دست مدیریت می‌رسد.\n\n❌ <i>برای لغو این حالت و برگشت به منو، دستور /start را بفرستید.</i>`,
-      { parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        `🎧 <b>مرکز پشتیبانی آنلاین</b>\n\nشما وارد حالت ارتباط با اپراتور شدید.\n\n✍️ لطفاً پیام، انتقاد یا مشکل خود را در <u>یک پیام متنی</u> ارسال کنید. پیام شما مستقیماً به دست مدیریت می‌رسد.\n\n❌ <i>برای لغو این حالت و برگشت به منو، دستور /start را بفرستید.</i>`,
+        { parse_mode: "HTML" },
+      )
+      .catch(() => {});
   });
 });
 
@@ -367,12 +429,16 @@ bot.on("message:text", async (ctx) => {
         `💬 <b>پاسخ پشتیبانی برای شما:</b>\n\n${replyText}\n\n📌 <i>برای پاسخ مجدد یا دریافت کانفیگ /start را بزنید.</i>`,
         { parse_mode: "HTML" },
       );
-      await ctx.reply("✅ پاسخ شما با موفقیت برای کاربر ارسال شد.");
+      await ctx
+        .reply("✅ پاسخ شما با موفقیت برای کاربر ارسال شد.")
+        .catch(() => {});
     } catch (error: any) {
       console.error("Failed to send reply:", error.message || error);
-      await ctx.reply(
-        "❌ <b>خطا در ارسال!</b>\nپاسخ ارسال نشد. احتمال دارد کاربر ربات را بلاک یا متوقف کرده باشد.",
-      );
+      await ctx
+        .reply(
+          "❌ <b>خطا در ارسال!</b>\nپاسخ ارسال نشد. احتمال دارد کاربر ربات را بلاک یا متوقف کرده باشد Blunt.",
+        )
+        .catch(() => {});
     }
     adminReplyMode.delete(userId);
     return;
@@ -393,29 +459,31 @@ bot.on("message:text", async (ctx) => {
           parse_mode: "HTML",
           reply_markup: replyKeyboard,
         });
-        await ctx.reply(
-          "✅ <b>پیام شما با موفقیت به بخش پشتیبانی ارسال شد.</b>\nبه زودی بررسی شده و پاسخ آن در همین‌جا برای شما فرستاده می‌شود.",
-          { parse_mode: "HTML" },
-        );
+        await ctx
+          .reply(
+            "✅ <b>پیام شما با موفقیت به بخش پشتیبانی ارسال شد.</b>\nبه زودی بررسی شده و پاسخ آن در همین‌جا برای شما فرستاده می‌شود.",
+            { parse_mode: "HTML" },
+          )
+          .catch(() => {});
       } else {
-        await ctx.reply(
-          "⚠️ <b>سیستم پشتیبانی موقتاً غیرفعال است!</b>\nلطفاً بعداً اقدام کنید.",
-          {
-            parse_mode: "HTML",
-          },
-        );
+        await ctx
+          .reply(
+            "⚠️ <b>سیستم پشتیبانی موقتاً غیرفعال است!</b>\nلطفاً بعداً اقدام کنید.",
+            { parse_mode: "HTML" },
+          )
+          .catch(() => {});
       }
     } catch (error: any) {
       console.error(
         "Failed to forward support message:",
         error.message || error,
       );
-      await ctx.reply(
-        "⚠️ <b>خطا در ارسال پیام!</b>\nمشکلی پیش آمد، لطفاً دوباره پیام خود را بفرستید.",
-        {
-          parse_mode: "HTML",
-        },
-      );
+      await ctx
+        .reply(
+          "⚠️ <b>خطا در ارسال پیام!</b>\nمشکلی پیش آمد، لطفاً دوباره پیام خود را بفرستید.",
+          { parse_mode: "HTML" },
+        )
+        .catch(() => {});
     }
     supportMode.delete(userId);
     return;
@@ -434,36 +502,44 @@ bot.on("message:text", async (ctx) => {
       .text("👤 ورود به پنل کاربری", "go_to_user_panel")
       .row()
       .text("❌ بستن منو", "admin_close");
-    await ctx.reply(
-      "⚙️ <b>مدیریت گرامی؛</b>\nلطفاً از دکمه‌های پنل زیر استفاده کنید یا برای بازنشانی وضعیت دستور /start را بفرستید.",
-      { reply_markup: adminKeyboard, parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        "⚙️ <b>مدیریت گرامی؛</b>\nلطفاً از دکمه‌های پنل زیر استفاده کنید یا برای بازنشانی وضعیت دستور /start را بفرستید.",
+        { reply_markup: adminKeyboard, parse_mode: "HTML" },
+      )
+      .catch(() => {});
   } else {
-    await ctx.reply(
-      "🤖 <b>متوجه دستور شما نشدم!</b>\nلطفاً برای استفاده از خدمات ربات، از دکمه‌های منوی زیر استفاده کنید یا دستور /start را بفرستید.",
-      { reply_markup: mainMenuKeyboard, parse_mode: "HTML" },
-    );
+    await ctx
+      .reply(
+        "🤖 <b>متوجه دستور شما نشدم!</b>\nلطفاً برای استفاده از خدمات ربات، از دکمه‌های منوی زیر استفاده کنید یا دستور /start را بفرستید.",
+        { reply_markup: mainMenuKeyboard, parse_mode: "HTML" },
+      )
+      .catch(() => {});
   }
 });
 
 bot.callbackQuery(/reply_to_(\d+)/, async (ctx) => {
-  await ctx.answerCallbackQuery();
+  await ctx.answerCallbackQuery().catch(() => {});
   if (ctx.from.id !== ADMIN_ID) {
-    await ctx.reply("⛔ شما مجاز به پاسخگویی نیستید.");
+    await ctx.reply("⛔ شما مجاز به پاسخگویی نیستید.").catch(() => {});
     return;
   }
   const match = ctx.match[1];
   if (!match) {
-    await ctx.reply("❌ خطا در شناسایی آیدی کاربر.");
+    await ctx.reply("❌ خطا در شناسایی آیدی کاربر.").catch(() => {});
     return;
   }
   const targetUserId = parseInt(match, 10);
   adminReplyMode.set(ADMIN_ID, targetUserId);
-  await ctx.reply(
-    "✏️ <b>پاسخ خود را بنویسید:</b>\nمتن خود را ارسال کنید (قابلیت استفاده از تگ‌های HTML وجود دارد).",
-    { parse_mode: "HTML" },
-  );
-  await ctx.deleteMessage();
+  await ctx
+    .reply(
+      "✏️ <b>پاسخ خود را بنویسید:</b>\nمتن خود را ارسال کنید (قابلیت استفاده از تگ‌های HTML وجود دارد).",
+      { parse_mode: "HTML" },
+    )
+    .catch(() => {});
+
+  // لایه محافظتی برای حذف پیام جهت جلوگیری از کرش
+  await ctx.deleteMessage().catch(() => {});
 });
 
 async function sendOnlineStatus() {
@@ -471,7 +547,6 @@ async function sendOnlineStatus() {
   const uptime = Math.floor((Date.now() - START_TIME) / 1000);
   const hours = Math.floor(uptime / 3600);
   const minutes = Math.floor((uptime % 3600) / 60);
-  const seconds = uptime % 60;
   const statusText = `🟢 <b>گزارش وضعیت سیستم</b>\n\n✅ ربات فعال و آنلاین است.\n⏱ <b>آپتایم:</b> ${hours} ساعت و ${minutes} دقیقه\n🕒 <b>زمان ثبت:</b> ${new Date().toLocaleString("fa-IR")}`;
   try {
     await bot.api.sendMessage(ADMIN_ID, statusText, { parse_mode: "HTML" });
@@ -485,9 +560,13 @@ let telegramClient: any = null;
 
 async function updateConfigs() {
   if (!telegramClient) return;
-  console.log("Collecting configs...");
-  await collector(telegramClient);
-  console.log("Collection finished.");
+  try {
+    console.log("Collecting configs...");
+    await collector(telegramClient);
+    console.log("Collection finished.");
+  } catch (e) {
+    console.error("Error running config collector:", e);
+  }
 }
 
 async function dropConflictingIndex() {
@@ -505,7 +584,11 @@ async function dropConflictingIndex() {
 }
 
 async function main() {
-  await mongoose.connect(MONGODB_URI as string);
+  if (!MONGODB_URI) {
+    console.error("MONGODB_URI missing!");
+    process.exit(1);
+  }
+  await mongoose.connect(MONGODB_URI);
   console.log("Database connected.");
 
   await dropConflictingIndex();
@@ -516,14 +599,36 @@ async function main() {
     .then((client) => {
       telegramClient = client;
       updateConfigs();
-      setInterval(updateConfigs, 60 * 60 * 1000);
+      // جلوگیری از خطای کرش در ست‌اینتروالِ دانلود کانفیگ‌ها
+      setInterval(
+        async () => {
+          try {
+            await updateConfigs();
+          } catch (e) {
+            console.error(e);
+          }
+        },
+        60 * 60 * 1000,
+      );
     })
     .catch(console.error);
 
-  bot.start();
+  // روشن کردن ربات به صورت Long-Polling
+  bot.start().catch((err) => {
+    console.error("Fatal Bot Start Error:", err);
+  });
   console.log("Bot started successfully.");
 
-  setInterval(sendOnlineStatus, 5 * 60 * 1000);
+  setInterval(
+    async () => {
+      try {
+        await sendOnlineStatus();
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    5 * 60 * 1000,
+  );
   sendOnlineStatus().catch(console.error);
 }
 
