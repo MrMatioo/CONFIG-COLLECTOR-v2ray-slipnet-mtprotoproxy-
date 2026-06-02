@@ -1,9 +1,29 @@
 ╔══════════════════════╗
  🚀 V2RAY COLLECTOR
- 📊 Total: 32
- 📅 06/02/2026, 12:24:18
+ 📊 Total: 24
+ 📅 06/02/2026, 12:37:21
 ╚══════════════════════╝
 
+vless://InternetAzadRobot-AliKiller@fastly.com:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot31dx253.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%201
+──────────────────────
+vless://InternetAzadRobot-AliKiller@151.101.193.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot07gt745.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%202
+──────────────────────
+vless://InternetAzadRobot-AliKiller@151.101.193.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot31dx253.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha3%F0%9F%8E%84
+──────────────────────
+vless://InternetAzadRobot-AliKiller@151.101.129.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot44xd894.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%204
+──────────────────────
+vless://88e9a310-9e15-4270-9142-2c19abbbb499@gozarxbot2.zipfly.org:8080?security=reality&type=tcp&headerType=&path=&host=&sni=play.google.com&fp=firefox&pbk=1460VvVL_EeaVKJhqTcWNAfhwY9QwN1n9d50LN3YbV0&sid=1377ced7733207e7#%F0%9F%87%A9%F0%9F%87%AA%20Germany
+──────────────────────
+vless://715b4708-ec7b-4c3b-9a68-66e357f7b731@blubank.sb24.ir:8080?path=%2Fmoz&security=none&encryption=none&host=moz.tecnotech.ir&type=ws#%40appsooner%20%DA%A9%D8%A7%D9%86%D8%A7%D9%84%20%D8%AA%D9%84%DA%AF%D8%B1%D8%A7%D9%85%20%F0%9F%95%8A%EF%B8%8F
+──────────────────────
+vless://628914c6-42c2-400d-8f63-203fc5b5ff97@arvancloud.ir:80?path=%2F&security=&encryption=none&host=sub80.clonetechh.ir&type=ws#%40Vpn_jet7
+──────────────────────
+vless://8dc7722c-2767-4eea-a28b-2f8daacc07e3@sca11.myfymain.com:8880?security=&encryption=none&type=grpc#%40Vpn_jet7
+──────────────────────
+vless://7dc5ed50-e32b-4a1f-b840-69db2725e767@blit2.hamrahcore.ir:719?path=%2Fapi%2Fv2%2Fxtrnwqjbkr%3Fed%3D2560&security=&encryption=none&host=play.google.com&type=ws#%40Vpn_jet7
+──────────────────────
+trojan://telegram-id-privatevpns@3.66.185.190:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#(S102)🇩🇪t.me/PrivateVPNs
+──────────────────────
 vless://fc965ad9-bdd7-4815-ad71-b39ec5972dc1@162.159.36.20:443?path=%2Ftsghdws&security=tls&encryption=none&host=octopusss4.com&type=ws&sni=octopusss4.com#%D8%A7%D8%AE%D8%AA%D8%B5%D8%A7%D8%B5%DB%8C%20%D8%B1%D8%A7%DB%8C%DA%AF%D8%A7%D9%86%20%40NabiProxy
 ──────────────────────
 vless://da48859d-edf9-4a8c-a026-80910591f284@fastly.com:80?mode=auto&path=%2FTignal&security=none&encryption=none&extra=%7B%22xPaddingBytes%22%3A%22100-1000%22%7D&host=tignaltofansv8.global.ssl.fastly.net&type=xhttp#%D8%A7%D8%AE%D8%AA%D8%B5%D8%A7%D8%B5%DB%8C%20%D8%B1%D8%A7%DB%8C%DA%AF%D8%A7%D9%86%20%40NabiProxy
@@ -22,28 +42,6 @@ vless://37afa02e-9d9c-4679-bd21-5e6cee0cb0c1@185.212.117.96:52165?mode=gun&secur
 ──────────────────────
 vless://InternetAzadRobot@146.75.117.91:80?mode=auto&path=%2FTignal&security=none&encryption=none&host=tignaltofansv5.global.ssl.fastly.net&type=xhttp#%D8%A7%D8%AE%D8%AA%D8%B5%D8%A7%D8%B5%DB%8C%20%D8%B1%D8%A7%DB%8C%DA%AF%D8%A7%D9%86%20%40NabiProxy
 ──────────────────────
-vless://a75c027c-dc95-4efd-894a-2c85f0186017@162.19.132.77:2095?security=none&encryption=none&headerType=none&type=tcp#%40NETMelliAnti%20%3A%20%DA%A9%D8%A7%D9%86%D8%A7%D9%84%20%DA%A9%D8%A7%D9%86%D9%81%DB%8C%DA%AF
-──────────────────────
-vless://79475016-7b3c-414d-9110-9b9faac6922d@panel.dibaux.ir:80?path=%2Fstream&security=none&encryption=none&type=ws#%40NETMelliAnti%20%3A%20%DA%86%D9%86%D9%84
-──────────────────────
-vless://55f7d143-a594-4a91-b030-f227039f85ef@79.127.196.11:8443?security=tls&encryption=none&insecure=0&headerType=none&type=tcp&allowInsecure=0&sni=cdg-1.fromblancwithlove.com#%40NETMelliAnti%F0%9F%91%88%F0%9F%8F%BB%F0%9F%91%88%F0%9F%8F%BB%D8%B3%D8%B1%D9%88%D8%B1%D8%AC%D8%AF%DB%8C%D8%AF%20%D8%AF%D8%A7%D8%AE%D9%84%20%DA%86%D9%86%D9%84%F0%9F%A5%80%E2%9D%A4
-──────────────────────
-vless://1a1e38b5-752d-4c65-8dae-a28e5a106d7a@104.17.121.71:443?mode=auto&path=%2FTelegram-Zedmodeon&security=tls&alpn=h2%2Chttp%2F1.1&encryption=none&insecure=0&fp=chrome&type=xhttp&allowInsecure=0&sni=manok.tll-far.ir#%40NETMelliAnti%20%F0%9F%91%88%F0%9F%8F%BB%F0%9F%91%88%F0%9F%8F%BB%D8%B3%D8%B1%D9%88%D8%B1%D8%AC%D8%AF%DB%8C%D8%AF%20%D8%AF%D8%A7%D8%AE%D9%84%20%DA%86%D9%86%D9%84
-──────────────────────
-vless://cc752a3e-1537-4e86-bb50-1b897bf7b33c@104.19.229.21:443?path=%2Fsg-melbi&security=tls&encryption=none&insecure=0&host=cyylr.eu.cc&fp=chrome&type=ws&allowInsecure=0&sni=cyylr.eu.cc#%40NETMelliAnti
-──────────────────────
-vless://a75c027c-dc95-4efd-894a-2c85f0186017@162.19.132.77:2095?security=none&encryption=none&headerType=none&type=tcp#🇩🇪All⁶
-──────────────────────
-vless://79475016-7b3c-414d-9110-9b9faac6922d@panel.dibaux.ir:80?path=%2Fstream&security=none&encryption=none&type=ws#🇩🇪All⁷
-──────────────────────
-vless://55f7d143-a594-4a91-b030-f227039f85ef@79.127.196.11:8443?security=tls&encryption=none&headerType=none&allowinsecure=0&type=tcp&sni=cdg-1.fromblancwithlove.com#🇩🇪All⁸
-──────────────────────
-vless://1a1e38b5-752d-4c65-8dae-a28e5a106d7a@104.17.121.71:443?mode=auto&path=%2FTelegram-Zedmodeon&security=tls&encryption=none&alpn=h2,http/1.1&fp=chrome&allowinsecure=0&type=xhttp&sni=manok.tll-far.ir#🇩🇪All⁹
-──────────────────────
-vless://cc752a3e-1537-4e86-bb50-1b897bf7b33c@104.19.229.21:443?path=%2Fsg-melbi&security=tls&encryption=none&host=cyylr.eu.cc&fp=chrome&allowinsecure=0&type=ws&sni=cyylr.eu.cc#🇩🇪All¹⁰
-──────────────────────
-trojan://telegram-id-privatevpns@3.66.185.190:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#(S102)🇩🇪t.me/PrivateVPNs
-──────────────────────
 vless://394f6981-a782-4779-9a85-e6cf22935d93@195.181.173.199:8443?security=tls&encryption=none&alpn=h2&headerType=none&type=tcp&sni=ams1.fromblancwithlove.com#%40SPARTAN_YT
 ──────────────────────
 vless://8dc7722c-2767-4eea-a28b-2f8daacc07e3@sca11.myfymain.com:8880?mode=gun&security=none&encryption=none&authority=&type=grpc&serviceName=#%40SPARTAN_YT
@@ -53,20 +51,6 @@ trojan://386bd471-4e29-4e79-9a3c-6bc6076ce4b6@208.103.161.170:443?path=%2Fid-tks
 vless://fc965ad9-bdd7-4815-ad71-b39ec5972dc1@188.114.97.6:443?path=%2Ftsghdws&security=tls&encryption=none&alpn=h3,h2,http/1.1&host=octopusss4.com&fp=chrome&type=ws&sni=octopusss4.com#%40SPARTAN_YT
 ──────────────────────
 trojan://mitivpn@104.16.75.127:443?path=%2F720f09dba195249b423f771661162528%2Fworkers%2Fservices%2Fview%2Fmitivpn%2Fproduction%2Fsettings&security=tls&alpn=http/1.1&host=www.linkman1.ir&fp=chrome&type=ws&sni=www.linkman1.ir#%40SPARTAN_YT
-──────────────────────
-vless://628914c6-42c2-400d-8f63-203fc5b5ff97@arvancloud.ir:80?path=%2F&security=&encryption=none&host=sub80.clonetechh.ir&type=ws#%40Vpn_jet7
-──────────────────────
-vless://8dc7722c-2767-4eea-a28b-2f8daacc07e3@sca11.myfymain.com:8880?security=&encryption=none&type=grpc#%40Vpn_jet7
-──────────────────────
-vless://7dc5ed50-e32b-4a1f-b840-69db2725e767@blit2.hamrahcore.ir:719?path=%2Fapi%2Fv2%2Fxtrnwqjbkr%3Fed%3D2560&security=&encryption=none&host=play.google.com&type=ws#%40Vpn_jet7
-──────────────────────
-vless://InternetAzadRobot-AliKiller@fastly.com:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot31dx253.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%201
-──────────────────────
-vless://InternetAzadRobot-AliKiller@151.101.193.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot07gt745.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%202
-──────────────────────
-vless://InternetAzadRobot-AliKiller@151.101.193.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot31dx253.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha3%F0%9F%8E%84
-──────────────────────
-vless://InternetAzadRobot-AliKiller@151.101.129.57:80?mode=auto&path=%2F&security=none&encryption=none&host=InternetAzadRobot44xd894.global.ssl.fastly.net&type=xhttp#Tel-%40ProxyMtAlpha%F0%9F%8E%84%204
 
 ╔══════════════════════╗
  🤖 Bot: @configCollectore_Bot
