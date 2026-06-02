@@ -1,7 +1,7 @@
 ╔══════════════════════╗
  🚀 PROXY COLLECTOR
- 📊 Total: 16
- 📅 06/02/2026, 12:37:21
+ 📊 Total: 9
+ 📅 06/02/2026, 14:57:15
 ╚══════════════════════╝
 
 https://t.me/proxy?server=87.248.129.12&port=15&secret=ee1603010200010001fc030386e24c3add626973636f7474692e79656b74616e65742e636f6d
@@ -16,25 +16,11 @@ https://t.me/proxy?server=87.248.129.51&port=15&secret=ee1603010200010001fc03038
 ──────────────────────
 https://t.me/proxy?server=87.248.129.52&port=15&secret=ee1603010200010001fc030386e24c3add63646e2e79656b74616e65742e636f6d
 ──────────────────────
-https://t.me/proxy?server=186.246.21.31&port=443&secret=eeb4977787e9a3f4c9d51ec528688f922e617669746f2e7275
+https://t.me/proxy?server=mysrvpro.tigernull.ir&port=8443&secret=ee8f99bb0788125042ce43c56159e265a6636c6f7564666c6172652e636f6d
 ──────────────────────
-https://t.me/proxy?server=186.246.21.40&port=443&secret=eec11798ab008831b474066c9e1ebf5c74617669746f2e7275
+tg://proxy?server=116.203.2.157&port=4455&secret=dd104462821249bd7ac519130220c25d09
 ──────────────────────
-tg://proxy?server=3.70.219.32&port=80&secret=dd104462821249bd7ac519130220c25d09
-──────────────────────
-tg://proxy?server=18.130.111.7&port=80&secret=dd104462821249bd7ac519130220c25d09
-──────────────────────
-https://t.me/proxy?server=186.246.21.89&port=443&secret=eec11798ab008831b474066c9e1ebf5c73617669746f2e7275
-──────────────────────
-https://t.me/proxy?server=vk.chunkycorp.shop&port=443&secret=ee3a3365be03d6bc13518d65e70a3146c2617669746f2e7275
-──────────────────────
-tg://proxy?server=34.200.236.128&port=80&secret=dd104462821249bd7ac519130220c25d09
-──────────────────────
-tg://proxy?server=3.218.208.101&port=80&secret=dd104462821249bd7ac519130220c25d09
-──────────────────────
-https://t.me/proxy?server=85.133.194.17&port=8443&secret=eeNEgYdJvXrFGRMCIMJdCQRueWVrdGFuZXQuY29tZmFyYWthdi5jb212YW4ubmFqdmEuY29tAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-──────────────────────
-https://t.me/proxy?server=proxy.speedbreaker.info&port=25565&secret=ee1603010200010001fc030386e24c3add626973636f7474692e79656b74616e65742e636f6d
+tg://proxy?server=91.107.150.148&port=8443&secret=dd104462821249bd7ac519130220c25d09
 
 ╔══════════════════════╗
  🤖 Bot: @configCollectore_Bot

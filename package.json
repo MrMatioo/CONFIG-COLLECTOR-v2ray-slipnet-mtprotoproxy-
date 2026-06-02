@@ -1,25 +1,31 @@
 {
   "name": "config-telegram",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h1 align=\"center\" style=\"color: #39D0DB; font-size: 38px; font-weight: bold;\">🤖 Config Collector Bot 🤖</h1>",
+  "homepage": "https://github.com/MrMatioo/CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-#readme",
+  "bugs": {
+    "url": "https://github.com/MrMatioo/CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrMatioo/CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/bot.js",
-    "Dev": "tsc --watch & nodemon dist/bot.js"
+    "start": "node dist/bot.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@types/mongoose": "^5.11.96",
     "dotenv": "^17.4.2",
     "grammy": "^1.43.0",
-    "input": "^1.0.1",
-    "mongoose": "^9.6.1",
-    "telegram": "^2.26.22",
-    "ts-node": "^10.9.2"
+    "mongoose": "^9.6.3",
+    "path": "^0.12.7",
+    "telegram": "^2.26.22"
   },
   "devDependencies": {
     "@types/node": "^25.9.1"
