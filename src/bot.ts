@@ -15,8 +15,7 @@ if (!BOT_TOKEN) {
   process.exit(1);
 }
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/config_bot";
+const MONGODB_URI = process.env.MONGODB_URI;
 const REQUIRED_CHANNEL = process.env.REQUIRED_CHANNEL || "@configCollectore";
 const ADMIN_ID = Number(process.env.ADMIN_ID) || 0;
 const STICKER_FILE_ID = process.env.STICKER_FILE_ID || "";

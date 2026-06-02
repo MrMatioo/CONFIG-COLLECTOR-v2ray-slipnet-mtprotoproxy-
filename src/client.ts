@@ -7,6 +7,7 @@ dotenv.config();
 
 const SESSION_FILE = "./session.txt";
 let memoizedClient: TelegramClient | null = null;
+const SESSION = process.env.SESSIONSTRING;
 
 function askQuestion(query: string): Promise<string> {
   const rl = readline.createInterface({
