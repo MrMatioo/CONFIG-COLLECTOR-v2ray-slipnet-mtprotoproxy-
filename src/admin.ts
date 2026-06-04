@@ -375,6 +375,10 @@ ${settings.channelLink}
   scheduleDailyReport();
 }
 
+export function isAdminInBroadcastMode(adminId: number): boolean {
+  return broadcastSessions.has(adminId);
+}
+
 export function getSettings(): BotSettings {
   return settings;
 }

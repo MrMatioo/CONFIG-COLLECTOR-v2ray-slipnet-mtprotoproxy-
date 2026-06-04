@@ -7,7 +7,12 @@ import { UserModel } from "./schemas/userSchema.js";
 import { SupportSessionModel } from "./schemas/supportSessionSchema.js";
 import { collector } from "./utils/collector.js";
 import { getTelegramClient } from "./client.js";
-import { setupAdminPanel, setUserMenuKeyboard, getSettings } from "./admin.js";
+import {
+  setupAdminPanel,
+  setUserMenuKeyboard,
+  getSettings,
+  isAdminInBroadcastMode,
+} from "./admin.js";
 import { saveUserToDB, updateLastActive } from "./services/userService.js";
 import {
   loadConfigFile,
@@ -592,6 +597,9 @@ bot.on("message:text", async (ctx) => {
   }
 
   if (userId === ADMIN_ID) {
+    if (isAdminInBroadcastMode(userId)) {
+      return;
+    }
     const adminKeyboard = new InlineKeyboard()
       .text("📊 آمار کاربران", "admin_stats")
       .row()
