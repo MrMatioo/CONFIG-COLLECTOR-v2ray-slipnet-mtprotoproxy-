@@ -4,7 +4,7 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<number, RateLimitEntry>();
-const MAX_REQUESTS = 5;
+const MAX_REQUESTS = 10;
 const TIME_WINDOW_MS = 60_000;
 
 export function isRateLimited(userId: number): boolean {

@@ -83,7 +83,7 @@ export const collector = async (client: TelegramClient): Promise<void> => {
 
   for (const channel of shuffledChannels) {
     try {
-      const messages = await client.getMessages(channel, { limit: 3 });
+      const messages = await client.getMessages(channel, { limit: 2 });
 
       for (const msg of messages) {
         if (msg?.message && typeof msg.message === "string") {
