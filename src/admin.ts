@@ -31,8 +31,9 @@ function getAdminMenuKeyboard(): InlineKeyboard {
 }
 
 interface BroadcastSession {
-  step: "awaiting_text" | "awaiting_confirmation";
-  text?: string;
+  step: "awaiting_forward" | "awaiting_confirmation";
+  sourceChatId?: number;
+  sourceMessageId?: number;
 }
 
 const broadcastSessions = new Map<number, BroadcastSession>();
@@ -113,9 +114,12 @@ export function setupAdminPanel(bot: Bot): void {
   bot.callbackQuery("admin_broadcast", async (ctx: Context) => {
     await ctx.answerCallbackQuery();
     if (!ctx.from?.id) return;
-    broadcastSessions.set(ctx.from.id, { step: "awaiting_text" });
+    broadcastSessions.set(ctx.from.id, { step: "awaiting_forward" });
     await ctx.editMessageText(
-      "📢 <b>ارسال همگانی</b>\n\nلطفاً متن پیام خود را ارسال کنید.\n(می‌تواند شامل HTML باشد)\n\nبرای لغو /cancel را بفرستید.",
+      "📢 <b>ارسال همگانی به روش فوروارد</b>\n\n" +
+        "لطفاً پیام مورد نظر (متن، عکس، ویدیو، فایل، استیکر و ...) را به همین ربات <b>فوروارد کنید</b>.\n\n" +
+        "⚠️ توجه: پیام فوروارد شده دقیقاً با همان ظاهر و با ذکر فرستنده اصلی برای همه کاربران ارسال خواهد شد.\n\n" +
+        "برای لغو، دستور /cancel را بفرستید.",
       {
         parse_mode: "HTML",
         reply_markup: new InlineKeyboard().text(
@@ -133,30 +137,47 @@ export function setupAdminPanel(bot: Bot): void {
     });
   });
 
-  bot.on("message:text", async (ctx: Context, next: () => Promise<void>) => {
+  bot.on("message", async (ctx: Context, next: () => Promise<void>) => {
     if (ctx.from?.id !== ADMIN_ID) return await next();
     const session = broadcastSessions.get(ctx.from.id);
     if (!session) return await next();
 
-    const messageText = ctx.message?.text;
-    if (messageText === "/cancel") {
+    if (ctx.message?.text === "/cancel") {
       broadcastSessions.delete(ctx.from.id);
       await ctx.reply("لغو شد.", { reply_markup: getAdminMenuKeyboard() });
       return;
     }
 
-    if (session.step === "awaiting_text" && messageText) {
-      session.text = messageText;
+    if (session.step === "awaiting_forward") {
+      if (!ctx.message) {
+        await ctx.reply("⚠️ لطفاً یک پیام معتبر فوروارد کنید.");
+        return;
+      }
+      session.sourceChatId = ctx.message.chat.id;
+      session.sourceMessageId = ctx.message.message_id;
       session.step = "awaiting_confirmation";
+
       const confirmKeyboard = new InlineKeyboard()
         .text("✅ بله، ارسال کن", "admin_confirm_broadcast")
         .text("❌ خیر، لغو", "admin_cancel_broadcast");
-      await ctx.reply(
-        "✉️ <b>پیش‌نمایش پیام:</b>\n\n" +
-          messageText +
-          "\n\nآیا می‌خواهید برای همه کاربران ارسال شود؟",
-        { parse_mode: "HTML", reply_markup: confirmKeyboard },
-      );
+
+      await ctx.reply("✉️ <b>پیش‌نمایش پیام فوروارد شده:</b>", {
+        parse_mode: "HTML",
+      });
+      await ctx.reply("⬇️ پیام شما به این صورت برای همه ارسال خواهد شد:");
+
+      if (ctx.chat && session.sourceChatId && session.sourceMessageId) {
+        await ctx.api.forwardMessage(
+          ctx.chat.id,
+          session.sourceChatId,
+          session.sourceMessageId,
+        );
+      }
+
+      await ctx.reply("\nآیا می‌خواهید این پیام برای همه کاربران ارسال شود؟", {
+        reply_markup: confirmKeyboard,
+        parse_mode: "HTML",
+      });
     }
   });
 
@@ -164,15 +185,14 @@ export function setupAdminPanel(bot: Bot): void {
     await ctx.answerCallbackQuery();
     if (!ctx.from?.id) return;
     const session = broadcastSessions.get(ctx.from.id);
-    if (!session || !session.text) {
+    if (!session || !session.sourceChatId || !session.sourceMessageId) {
       await ctx.editMessageText("خطا: پیامی یافت نشد.");
       broadcastSessions.delete(ctx.from.id);
       return;
     }
-    const messageText = session.text;
     broadcastSessions.delete(ctx.from.id);
     await ctx.editMessageText(
-      "⏳ در حال ارسال پیام به کاربران... لطفاً صبر کنید.",
+      "⏳ در حال ارسال همگانی به کاربران... لطفاً صبر کنید.",
     );
 
     const userCursor = UserModel.find({}, "telegramId").cursor();
@@ -185,9 +205,11 @@ export function setupAdminPanel(bot: Bot): void {
       user = await userCursor.next()
     ) {
       try {
-        await bot.api.sendMessage(user.telegramId, messageText, {
-          parse_mode: "HTML",
-        });
+        await bot.api.forwardMessage(
+          user.telegramId,
+          session.sourceChatId,
+          session.sourceMessageId,
+        );
         success++;
         await new Promise((r) => setTimeout(r, 50));
       } catch {
@@ -340,6 +362,7 @@ ${settings.channelLink}
       now.getMonth(),
       now.getDate() + 1,
       9,
+      0,
       0,
       0,
     );
