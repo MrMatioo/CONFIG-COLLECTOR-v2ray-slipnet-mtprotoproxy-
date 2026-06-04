@@ -472,7 +472,7 @@ bot.callbackQuery("status", async (ctx) => {
 
 bot.callbackQuery(/v2ray_page_(\d+)/, async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
-  const page = parseInt(ctx.match[1], 10);
+  const page = parseInt(ctx.match[1]!, 10);
   const links = extractConfigLinks(path.resolve("./v2ray_configs.txt"));
   const messageId = ctx.callbackQuery.message?.message_id;
   if (messageId) {
@@ -482,7 +482,7 @@ bot.callbackQuery(/v2ray_page_(\d+)/, async (ctx) => {
 
 bot.callbackQuery(/slipnet_page_(\d+)/, async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
-  const page = parseInt(ctx.match[1], 10);
+  const page = parseInt(ctx.match[1]!, 10);
   const links = extractConfigLinks(path.resolve("./slipnet_configs.txt"));
   const messageId = ctx.callbackQuery.message?.message_id;
   if (messageId) {
