@@ -153,7 +153,7 @@ async function isSupportModeActive(userId: number): Promise<boolean> {
 
 const adminReplyMode = new Map<number, number>();
 
-function extractConfigLinks(filePath: string): string[] {
+function extractV2rayLinks(filePath: string): string[] {
   if (!fs.existsSync(filePath)) return [];
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n");
@@ -164,9 +164,7 @@ function extractConfigLinks(filePath: string): string[] {
       trimmed.startsWith("vless://") ||
       trimmed.startsWith("vmess://") ||
       trimmed.startsWith("ss://") ||
-      trimmed.startsWith("trojan://") ||
-      trimmed.startsWith("slipnet-enc:") ||
-      trimmed.startsWith("slipnet:")
+      trimmed.startsWith("trojan://")
     ) {
       links.push(trimmed);
     }
@@ -174,21 +172,53 @@ function extractConfigLinks(filePath: string): string[] {
   return links;
 }
 
-async function sendConfigPage(
+function extractSlipnetLinks(filePath: string): string[] {
+  if (!fs.existsSync(filePath)) return [];
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
+  const links: string[] = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("slipnet-enc:") || trimmed.startsWith("slipnet:")) {
+      links.push(trimmed);
+    }
+  }
+  return links;
+}
+
+function extractProxyLinks(filePath: string): string[] {
+  if (!fs.existsSync(filePath)) return [];
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
+  const links: string[] = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (
+      trimmed.startsWith("tg://proxy?") ||
+      trimmed.startsWith("https://t.me/proxy?")
+    ) {
+      links.push(trimmed);
+    }
+  }
+  return links;
+}
+
+async function sendPaginatedList(
   ctx: any,
   page: number,
-  allLinks: string[],
-  configName: string,
+  allItems: string[],
+  title: string,
+  callbackPrefix: string,
   messageId?: number,
 ) {
   const itemsPerPage = 12;
-  const totalPages = Math.ceil(allLinks.length / itemsPerPage);
+  const totalPages = Math.ceil(allItems.length / itemsPerPage);
   const start = (page - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  const pageLinks = allLinks.slice(start, end);
+  const pageItems = allItems.slice(start, end);
 
-  if (pageLinks.length === 0) {
-    await ctx.reply("⚠️ هیچ کانفیگی یافت نشد.").catch(() => {});
+  if (pageItems.length === 0) {
+    await ctx.reply("⚠️ موردی یافت نشد.").catch(() => {});
     return;
   }
 
@@ -198,27 +228,27 @@ async function sendConfigPage(
     timeZone: "Asia/Tehran",
   });
 
-  const header = `╔══════════════════════╗\n🚀 ${configName.toUpperCase()} CONFIGS\n🕒 ${timeString}\n📄 صفحه ${page} از ${totalPages}\n╚══════════════════════╝\n\n`;
-  const body = pageLinks.join("\n\n");
-  const footer = `\n\n📊 مجموع: ${allLinks.length} کانفیگ`;
-
+  const separator = "──────────────────────";
+  const header = `╔══════════════════════╗\n🚀 ${title.toUpperCase()}\n🕒 ${timeString}\n📄 صفحه ${page} از ${totalPages}\n╚══════════════════════╝\n\n`;
+  const body = pageItems.join(`\n${separator}\n`);
+  const footer = `\n\n📊 مجموع: ${allItems.length} مورد`;
   let fullText = header + body + footer;
 
   if (fullText.length > 4096) {
     const saferItemsPerPage = Math.floor(itemsPerPage * 0.7);
     const newStart = (page - 1) * saferItemsPerPage;
     const newEnd = newStart + saferItemsPerPage;
-    const saferLinks = allLinks.slice(newStart, newEnd);
-    const saferBody = saferLinks.join("\n\n");
+    const saferItems = allItems.slice(newStart, newEnd);
+    const saferBody = saferItems.join(`\n${separator}\n`);
     fullText = header + saferBody + footer;
   }
 
   const keyboard = new InlineKeyboard();
   if (page > 1) {
-    keyboard.text("◀️ قبلی", `${configName}_page_${page - 1}`);
+    keyboard.text("◀️ قبلی", `${callbackPrefix}_page_${page - 1}`);
   }
   if (page < totalPages) {
-    keyboard.text("بعدی ▶️", `${configName}_page_${page + 1}`);
+    keyboard.text("بعدی ▶️", `${callbackPrefix}_page_${page + 1}`);
   }
   keyboard.row().text("❌ بستن", "close_config_view");
 
@@ -355,18 +385,6 @@ async function deduplicateFile(filePath: string): Promise<void> {
   }
 }
 
-async function sendProxyText(ctx: any, filePath: string) {
-  const content = loadProxyFile(filePath);
-  if (!content) {
-    await ctx
-      .reply("🔌 پروکسی فعالی یافت نشد!", { parse_mode: "HTML" })
-      .catch(() => {});
-    return;
-  }
-  await sendLongText(ctx, content);
-  await updateLastActive(ctx.from.id);
-}
-
 async function withTempMessage(ctx: any, action: () => Promise<void>) {
   const tempMsgId = await sendTempMessage(ctx);
   try {
@@ -390,33 +408,37 @@ bot.use(async (ctx, next) => {
 
 bot.callbackQuery("getV2ray", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
-  const links = extractConfigLinks(path.resolve("./v2ray_configs.txt"));
+  const links = extractV2rayLinks(path.resolve("./v2ray_configs.txt"));
   if (links.length === 0) {
     await ctx.reply("⚠️ هیچ کانفیگ v2ray یافت نشد.").catch(() => {});
     return;
   }
   await withTempMessage(ctx, async () => {
-    await sendConfigPage(ctx, 1, links, "v2ray");
+    await sendPaginatedList(ctx, 1, links, "v2ray", "v2ray");
   });
 });
 
 bot.callbackQuery("getSlipnet", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
-  const links = extractConfigLinks(path.resolve("./slipnet_configs.txt"));
+  const links = extractSlipnetLinks(path.resolve("./slipnet_configs.txt"));
   if (links.length === 0) {
     await ctx.reply("⚠️ هیچ کانفیگ slipnet یافت نشد.").catch(() => {});
     return;
   }
   await withTempMessage(ctx, async () => {
-    await sendConfigPage(ctx, 1, links, "slipnet");
+    await sendPaginatedList(ctx, 1, links, "slipnet", "slipnet");
   });
 });
 
 bot.callbackQuery("getProxy", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
+  const links = extractProxyLinks(path.resolve("./proxy.txt"));
+  if (links.length === 0) {
+    await ctx.reply("⚠️ هیچ پروکسی یافت نشد.").catch(() => {});
+    return;
+  }
   await withTempMessage(ctx, async () => {
-    const filePath = path.resolve("./proxy.txt");
-    await sendProxyText(ctx, filePath);
+    await sendPaginatedList(ctx, 1, links, "proxy", "proxy");
   });
 });
 
@@ -427,8 +449,7 @@ bot.callbackQuery("help", async (ctx) => {
       .reply(
         `💡 راهنمای استفاده\n\n` +
           `🔹 عضویت در کانال ${REQUIRED_CHANNEL} اجباری است.\n` +
-          `🔹 کانفیگ‌ها به صورت صفحه‌بندی شده و در یک پیام ارسال می‌شوند.\n` +
-          `🔹 پروکسی‌ها به صورت مستقیم فرستاده می‌شوند.\n` +
+          `🔹 کانفیگ‌ها و پروکسی‌ها به صورت صفحه‌بندی شده و در یک پیام ارسال می‌شوند.\n` +
           `🔄 تمام خروجی‌ها هر ساعت آپدیت می‌شوند.\n` +
           `🧹 کانفیگ‌های تکراری به طور خودکار حذف می‌شوند.\n\n` +
           `📌 برای بازگشت به منو، /start را بفرستید.`,
@@ -473,20 +494,30 @@ bot.callbackQuery("status", async (ctx) => {
 bot.callbackQuery(/v2ray_page_(\d+)/, async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
   const page = parseInt(ctx.match[1]!, 10);
-  const links = extractConfigLinks(path.resolve("./v2ray_configs.txt"));
+  const links = extractV2rayLinks(path.resolve("./v2ray_configs.txt"));
   const messageId = ctx.callbackQuery.message?.message_id;
   if (messageId) {
-    await sendConfigPage(ctx, page, links, "v2ray", messageId);
+    await sendPaginatedList(ctx, page, links, "v2ray", "v2ray", messageId);
   }
 });
 
 bot.callbackQuery(/slipnet_page_(\d+)/, async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
   const page = parseInt(ctx.match[1]!, 10);
-  const links = extractConfigLinks(path.resolve("./slipnet_configs.txt"));
+  const links = extractSlipnetLinks(path.resolve("./slipnet_configs.txt"));
   const messageId = ctx.callbackQuery.message?.message_id;
   if (messageId) {
-    await sendConfigPage(ctx, page, links, "slipnet", messageId);
+    await sendPaginatedList(ctx, page, links, "slipnet", "slipnet", messageId);
+  }
+});
+
+bot.callbackQuery(/proxy_page_(\d+)/, async (ctx) => {
+  await ctx.answerCallbackQuery().catch(() => {});
+  const page = parseInt(ctx.match[1]!, 10);
+  const links = extractProxyLinks(path.resolve("./proxy.txt"));
+  const messageId = ctx.callbackQuery.message?.message_id;
+  if (messageId) {
+    await sendPaginatedList(ctx, page, links, "proxy", "proxy", messageId);
   }
 });
 
