@@ -52,7 +52,6 @@ let settings: BotSettings = {
 };
 
 export function setupAdminPanel(bot: Bot): void {
-  // Middleware to restrict admin actions
   bot.use(async (ctx: Context, next: () => Promise<void>) => {
     if (ctx.from?.id === ADMIN_ID) {
       await next();
@@ -61,7 +60,6 @@ export function setupAdminPanel(bot: Bot): void {
     }
   });
 
-  // Admin command
   bot.command("admin", async (ctx: Context) => {
     if (ctx.from?.id !== ADMIN_ID) return;
     await ctx.reply("🔐 پنل مدیریت", {
@@ -70,7 +68,6 @@ export function setupAdminPanel(bot: Bot): void {
     });
   });
 
-  // Go to user panel
   bot.callbackQuery("go_to_user_panel", async (ctx: Context) => {
     await ctx.answerCallbackQuery();
     if (userMenuKeyboard) {
@@ -84,7 +81,6 @@ export function setupAdminPanel(bot: Bot): void {
     }
   });
 
-  // ========== Stats ==========
   bot.callbackQuery("admin_stats", async (ctx: Context) => {
     await ctx.answerCallbackQuery();
     const total = await UserModel.countDocuments();
@@ -114,7 +110,6 @@ export function setupAdminPanel(bot: Bot): void {
     });
   });
 
-  // ========== Broadcast ==========
   bot.callbackQuery("admin_broadcast", async (ctx: Context) => {
     await ctx.answerCallbackQuery();
     if (!ctx.from?.id) return;
@@ -138,7 +133,6 @@ export function setupAdminPanel(bot: Bot): void {
     });
   });
 
-  // Intercepting text for broadcast session
   bot.on("message:text", async (ctx: Context, next: () => Promise<void>) => {
     if (ctx.from?.id !== ADMIN_ID) return await next();
     const session = broadcastSessions.get(ctx.from.id);
@@ -207,7 +201,6 @@ export function setupAdminPanel(bot: Bot): void {
     );
   });
 
-  // ========== User List ==========
   async function showUserListPage(ctx: Context, page: number): Promise<void> {
     const skip = (page - 1) * USERS_PER_PAGE;
     const users = await UserModel.find({})
@@ -245,7 +238,6 @@ export function setupAdminPanel(bot: Bot): void {
     await showUserListPage(ctx, 1);
   });
 
-  // ========== Settings ==========
   bot.callbackQuery("admin_settings", async (ctx: Context) => {
     await ctx.answerCallbackQuery();
     const text = `

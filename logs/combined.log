@@ -1,0 +1,11 @@
+2026-06-04 19:34:18 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:36:10 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:36:20 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
+2026-06-04 19:37:21 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:37:31 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
+2026-06-04 19:38:14 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:38:24 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
+2026-06-04 19:39:45 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:39:55 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
+2026-06-04 19:42:39 [INFO]: Fake web server listening on port 3000.
+2026-06-04 19:42:56 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net

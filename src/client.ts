@@ -29,9 +29,7 @@ export async function getTelegramClient(): Promise<TelegramClient> {
     throw new Error("API_ID or API_HASH is missing in .env config");
   }
 
-  // ایجاد کلس استاندار سشن به صورت آبجکت
   const stringSession = new StringSession(SESSION);
-
   const client = new TelegramClient(stringSession, apiId, apiHash, {
     connectionRetries: 5,
   });

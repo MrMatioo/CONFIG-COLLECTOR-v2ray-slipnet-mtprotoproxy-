@@ -84,10 +84,6 @@ export const collector = async (client: TelegramClient): Promise<void> => {
   for (const channel of shuffledChannels) {
     try {
       const messages = await client.getMessages(channel, { limit: 3 });
-      // const channelLastActivity = messages[0]?.date.toFixed();
-      // console.log(
-      //   `Fetching from ${channel}, last activity: ${channelLastActivity}`,
-      // );
 
       for (const msg of messages) {
         if (msg?.message && typeof msg.message === "string") {

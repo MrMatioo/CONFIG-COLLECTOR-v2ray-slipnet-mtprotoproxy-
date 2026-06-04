@@ -17,7 +17,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start": "node dist/bot.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@types/mongoose": "^5.11.96",
@@ -25,7 +25,8 @@
     "grammy": "^1.43.0",
     "mongoose": "^9.6.3",
     "path": "^0.12.7",
-    "telegram": "^2.26.22"
+    "telegram": "^2.26.22",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@types/node": "^25.9.1"
