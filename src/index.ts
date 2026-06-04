@@ -153,6 +153,93 @@ async function isSupportModeActive(userId: number): Promise<boolean> {
 
 const adminReplyMode = new Map<number, number>();
 
+function extractConfigLinks(filePath: string): string[] {
+  if (!fs.existsSync(filePath)) return [];
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
+  const links: string[] = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (
+      trimmed.startsWith("vless://") ||
+      trimmed.startsWith("vmess://") ||
+      trimmed.startsWith("ss://") ||
+      trimmed.startsWith("trojan://") ||
+      trimmed.startsWith("slipnet-enc:") ||
+      trimmed.startsWith("slipnet:")
+    ) {
+      links.push(trimmed);
+    }
+  }
+  return links;
+}
+
+async function sendConfigPage(
+  ctx: any,
+  page: number,
+  allLinks: string[],
+  configName: string,
+  messageId?: number,
+) {
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(allLinks.length / itemsPerPage);
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  const pageLinks = allLinks.slice(start, end);
+
+  if (pageLinks.length === 0) {
+    await ctx.reply("⚠️ هیچ کانفیگی یافت نشد.").catch(() => {});
+    return;
+  }
+
+  const timeString = new Date().toLocaleTimeString("fa-IR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Tehran",
+  });
+
+  const header = `╔══════════════════════╗\n🚀 ${configName.toUpperCase()} CONFIGS\n🕒 ${timeString}\n📄 صفحه ${page} از ${totalPages}\n╚══════════════════════╝\n\n`;
+  const body = pageLinks.join("\n\n");
+  const footer = `\n\n📊 مجموع: ${allLinks.length} کانفیگ`;
+
+  let fullText = header + body + footer;
+
+  if (fullText.length > 4096) {
+    const saferItemsPerPage = Math.floor(itemsPerPage * 0.7);
+    const newStart = (page - 1) * saferItemsPerPage;
+    const newEnd = newStart + saferItemsPerPage;
+    const saferLinks = allLinks.slice(newStart, newEnd);
+    const saferBody = saferLinks.join("\n\n");
+    fullText = header + saferBody + footer;
+  }
+
+  const keyboard = new InlineKeyboard();
+  if (page > 1) {
+    keyboard.text("◀️ قبلی", `${configName}_page_${page - 1}`);
+  }
+  if (page < totalPages) {
+    keyboard.text("بعدی ▶️", `${configName}_page_${page + 1}`);
+  }
+  keyboard.row().text("❌ بستن", "close_config_view");
+
+  if (messageId) {
+    await ctx.api
+      .editMessageText(ctx.chat.id, messageId, fullText, {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
+      })
+      .catch(() => {});
+  } else {
+    const msg = await ctx
+      .reply(fullText, {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
+      })
+      .catch(() => {});
+    return msg;
+  }
+}
+
 bot.command("start", async (ctx) => {
   if (ctx.chat?.type !== "private") {
     await ctx
@@ -218,7 +305,7 @@ bot.command("start", async (ctx) => {
 });
 
 bot.command("status", async (ctx) => {
-  if (ctx.from?.id && ctx.from.id !== ADMIN_ID) {
+  if (ctx.from && ctx.from.id !== ADMIN_ID) {
     await statusCommand(ctx);
     await updateLastActive(ctx.from.id);
   }
@@ -268,30 +355,6 @@ async function deduplicateFile(filePath: string): Promise<void> {
   }
 }
 
-async function sendConfigAsText(
-  ctx: any,
-  filePath: string,
-  configName: string,
-) {
-  const cacheKey = configName === "v2ray" ? "v2ray" : "slipnet";
-  let content = loadConfigFile(filePath, cacheKey);
-  if (!content) {
-    await ctx
-      .reply(`⚠️ کانفیگ ${configName} در دسترس نیست.`, { parse_mode: "HTML" })
-      .catch(() => {});
-    return;
-  }
-  const timeString = new Date().toLocaleTimeString("fa-IR", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Asia/Tehran",
-  });
-  const header = `╔══════════════════════╗\n🚀 ${configName.toUpperCase()} CONFIGS\n🕒 آپدیت: ${timeString}\n╚══════════════════════╝\n\n`;
-  const fullText = header + content;
-  await sendLongText(ctx, fullText);
-  await updateLastActive(ctx.from.id);
-}
-
 async function sendProxyText(ctx: any, filePath: string) {
   const content = loadProxyFile(filePath);
   if (!content) {
@@ -327,17 +390,25 @@ bot.use(async (ctx, next) => {
 
 bot.callbackQuery("getV2ray", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
+  const links = extractConfigLinks(path.resolve("./v2ray_configs.txt"));
+  if (links.length === 0) {
+    await ctx.reply("⚠️ هیچ کانفیگ v2ray یافت نشد.").catch(() => {});
+    return;
+  }
   await withTempMessage(ctx, async () => {
-    const filePath = path.resolve("./v2ray_configs.txt");
-    await sendConfigAsText(ctx, filePath, "v2ray");
+    await sendConfigPage(ctx, 1, links, "v2ray");
   });
 });
 
 bot.callbackQuery("getSlipnet", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
+  const links = extractConfigLinks(path.resolve("./slipnet_configs.txt"));
+  if (links.length === 0) {
+    await ctx.reply("⚠️ هیچ کانفیگ slipnet یافت نشد.").catch(() => {});
+    return;
+  }
   await withTempMessage(ctx, async () => {
-    const filePath = path.resolve("./slipnet_configs.txt");
-    await sendConfigAsText(ctx, filePath, "slipnet");
+    await sendConfigPage(ctx, 1, links, "slipnet");
   });
 });
 
@@ -356,8 +427,8 @@ bot.callbackQuery("help", async (ctx) => {
       .reply(
         `💡 راهنمای استفاده\n\n` +
           `🔹 عضویت در کانال ${REQUIRED_CHANNEL} اجباری است.\n` +
-          `🔹 کانفیگ‌ها به صورت متن ارسال می‌شوند.\n` +
-          `🔹 پروکسی‌ها نیز مستقیم فرستاده می‌شوند.\n` +
+          `🔹 کانفیگ‌ها به صورت صفحه‌بندی شده و در یک پیام ارسال می‌شوند.\n` +
+          `🔹 پروکسی‌ها به صورت مستقیم فرستاده می‌شوند.\n` +
           `🔄 تمام خروجی‌ها هر ساعت آپدیت می‌شوند.\n` +
           `🧹 کانفیگ‌های تکراری به طور خودکار حذف می‌شوند.\n\n` +
           `📌 برای بازگشت به منو، /start را بفرستید.`,
@@ -397,6 +468,30 @@ bot.callbackQuery("status", async (ctx) => {
   await ctx.answerCallbackQuery().catch(() => {});
   await statusCommand(ctx);
   await updateLastActive(ctx.from.id);
+});
+
+bot.callbackQuery(/v2ray_page_(\d+)/, async (ctx) => {
+  await ctx.answerCallbackQuery().catch(() => {});
+  const page = parseInt(ctx.match[1], 10);
+  const links = extractConfigLinks(path.resolve("./v2ray_configs.txt"));
+  const messageId = ctx.callbackQuery.message?.message_id;
+  if (messageId) {
+    await sendConfigPage(ctx, page, links, "v2ray", messageId);
+  }
+});
+
+bot.callbackQuery(/slipnet_page_(\d+)/, async (ctx) => {
+  await ctx.answerCallbackQuery().catch(() => {});
+  const page = parseInt(ctx.match[1], 10);
+  const links = extractConfigLinks(path.resolve("./slipnet_configs.txt"));
+  const messageId = ctx.callbackQuery.message?.message_id;
+  if (messageId) {
+    await sendConfigPage(ctx, page, links, "slipnet", messageId);
+  }
+});
+
+bot.callbackQuery("close_config_view", async (ctx) => {
+  await ctx.deleteMessage().catch(() => {});
 });
 
 bot.on("message:text", async (ctx) => {
@@ -566,10 +661,7 @@ async function main() {
     logger.error("MONGODB_URI missing!");
     process.exit(1);
   }
-  await mongoose.connect(MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000,
-    family: 4,
-  });
+  await mongoose.connect(MONGODB_URI);
   logger.info("Database connected.");
 
   await dropConflictingIndex();
