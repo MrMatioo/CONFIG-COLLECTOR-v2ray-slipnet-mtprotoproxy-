@@ -21,6 +21,8 @@ const defaultChannels: string[] = [
   "@vpn_jet7",
   "@SPARTAN_YT",
   "@SlipNet0",
+  "@vpnbaz",
+  "@meliproxyy",
 ];
 
 function shuffleArray<T>(arr: T[]): T[] {
