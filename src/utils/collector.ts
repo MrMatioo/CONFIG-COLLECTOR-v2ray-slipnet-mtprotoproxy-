@@ -6,26 +6,21 @@ dotenv.config();
 let targetChannels: string[];
 
 const defaultChannels: string[] = [
+  "@Eag1e_YT",
+  "@v2dogs_n",
   "@ProxyMtAlpha",
+  "@v2dogs_gp",
+  "@iMTProto",
+  "@mitivpnr",
+  "@ChtNknV",
+  "@Shh_Proxy",
+  "@TirexNet",
+  "@fxamazonconfig",
+  "@PrivateMaster2",
+  "@AirdropKhas",
   "@vpn_jet7",
   "@SPARTAN_YT",
-  "@iMTProto",
-  "@v2dogs_n",
-  "@v2dogs_gp",
-  "@vasl_bashim",
-  "@ChtNknV",
-  "@NabiProxy",
-  "@vpnbaz",
-  "@Gp_config",
-  "@vpnplusee_free",
-  "@configraygan",
-  "@privateVPNS",
-  "@vayzone",
-  "@Config_magazine",
-  "@configshere",
-  "@virous_config",
   "@SlipNet0",
-  "@v2rayngvpn",
 ];
 
 function shuffleArray<T>(arr: T[]): T[] {
