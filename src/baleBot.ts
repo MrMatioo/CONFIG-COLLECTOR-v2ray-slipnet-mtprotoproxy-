@@ -1,13 +1,12 @@
 import axios from "axios";
 import fs from "fs";
 import path from "path";
-import logger from "./utils/logger.js";
+import logger from "./utils/logger.js"; // اگر این فایل داخل پوشه services است، مسیر را به ../utils/logger.js تغییر بده
 
 const BALE_TOKEN = process.env.BALE_BOT_TOKEN;
 const BALE_ADMIN_ID = Number(process.env.BALE_ADMIN_ID) || 0;
 const BALE_API = `https://tapi.bale.ai/bot${BALE_TOKEN}`;
 
-// کیبورد بله
 const baleMenuKeyboard = {
   inline_keyboard: [
     [{ text: "🚀 دریافت کانفیگ v2ray", callback_data: "bale_v2ray" }],
@@ -16,7 +15,6 @@ const baleMenuKeyboard = {
   ],
 };
 
-// ارسال منوی اصلی
 export async function sendMenuToBale(): Promise<void> {
   if (!BALE_TOKEN || !BALE_ADMIN_ID) return;
   try {
@@ -31,7 +29,6 @@ export async function sendMenuToBale(): Promise<void> {
   }
 }
 
-// خواندن مستقیم متن فایل و ارسال به بله (بدون نیاز به FormData)
 async function sendConfigContentText(filePath: string) {
   if (!fs.existsSync(filePath)) {
     return axios.post(`${BALE_API}/sendMessage`, {
@@ -40,7 +37,6 @@ async function sendConfigContentText(filePath: string) {
     });
   }
 
-  // خواندن متن داخل فایل (همراه با هدر و فوتر دقیقی که کالکتور ساخته)
   const fileContent = fs.readFileSync(filePath, "utf-8");
 
   if (!fileContent.trim()) {
@@ -50,7 +46,6 @@ async function sendConfigContentText(filePath: string) {
     });
   }
 
-  // بله مثل تلگرام محدودیت ۴۰۹۶ کاراکتر دارد، اگر متن بزرگ بود خردش می‌کنیم
   if (fileContent.length <= 4096) {
     return axios.post(`${BALE_API}/sendMessage`, {
       chat_id: BALE_ADMIN_ID,
@@ -66,15 +61,19 @@ async function sendConfigContentText(filePath: string) {
   }
 }
 
-// پولینگ بله
 export function startBaleBotPolling() {
   if (!BALE_TOKEN) return;
   let offset = 0;
+  let isPolling = false;
 
+  // استفاده از setInterval بهینه شده برای جلوگیری از تداخل درخواست‌ها
   setInterval(async () => {
+    if (isPolling) return; // اگر درخواست قبلی هنوز تمام نشده، درخواست جدید نفرست
+    isPolling = true;
+
     try {
       const response = await axios.get(`${BALE_API}/getUpdates`, {
-        params: { offset, timeout: 10 },
+        params: { offset, timeout: 5 }, // کاهش تایم‌اوت برای هماهنگی با زمان اینتروال
       });
 
       const updates = response.data?.result || [];
@@ -88,14 +87,12 @@ export function startBaleBotPolling() {
 
           if (fromId !== BALE_ADMIN_ID) continue;
 
-          // پاسخ فوری به دکمه برای باز شدن قفل آن در بله
           await axios
             .post(`${BALE_API}/answerCallbackQuery`, {
               callback_query_id: cb.id,
             })
             .catch(() => {});
 
-          // ارسال متن کانفیگ‌ها بر اساس دکمه زده شده
           if (data === "bale_v2ray") {
             await sendConfigContentText(
               path.resolve("./v2ray_configs.txt"),
@@ -112,7 +109,9 @@ export function startBaleBotPolling() {
         }
       }
     } catch (error: any) {
-      // نادیده گرفتن خطاهای نتورک یا تایم‌اوت پواینگ
+      // خطاهای شبکه لاگ شوند ولی باعث توقف برنامه نشوند
+    } finally {
+      isPolling = false; // قفل پولینگ باز می‌شود برای دوره بعد
     }
-  }, 2000);
+  }, 1000);
 }
