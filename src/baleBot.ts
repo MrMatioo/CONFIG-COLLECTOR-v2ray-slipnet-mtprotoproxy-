@@ -7,7 +7,7 @@ const BALE_TOKEN = process.env.BALE_BOT_TOKEN;
 const BALE_ADMIN_ID = Number(process.env.BALE_ADMIN_ID) || 0;
 const BALE_API = `https://tapi.bale.ai/bot${BALE_TOKEN}`;
 
-// کیبورد شبیه به تلگرام برای بله
+// کیبورد بله
 const baleMenuKeyboard = {
   inline_keyboard: [
     [{ text: "🚀 دریافت کانفیگ v2ray", callback_data: "bale_v2ray" }],
@@ -16,7 +16,7 @@ const baleMenuKeyboard = {
   ],
 };
 
-// تابع ارسال منوی اصلی به بله شما
+// ارسال منوی اصلی
 export async function sendMenuToBale(): Promise<void> {
   if (!BALE_TOKEN || !BALE_ADMIN_ID) return;
   try {
@@ -31,25 +31,42 @@ export async function sendMenuToBale(): Promise<void> {
   }
 }
 
-// تابع فرستادن خود فایل متنی با هدر و فوتر به بله
-async function sendFileToBale(filePath: string, fileName: string) {
-  const url = `${BALE_API}/sendDocument`;
+// خواندن مستقیم متن فایل و ارسال به بله (بدون نیاز به FormData)
+async function sendConfigContentText(filePath: string) {
   if (!fs.existsSync(filePath)) {
     return axios.post(`${BALE_API}/sendMessage`, {
       chat_id: BALE_ADMIN_ID,
-      text: "⚠️ فایل مورد نظر هنوز ساخته نشده است.",
+      text: "⚠️ فایل مورد نظر هنوز توسط کالکتور ساخته نشده است.",
     });
   }
 
-  const fileStream = fs.createReadStream(filePath);
-  const formData = new FormData();
-  formData.append("chat_id", String(BALE_ADMIN_ID));
-  formData.append("document", fileStream as any, fileName);
+  // خواندن متن داخل فایل (همراه با هدر و فوتر دقیقی که کالکتور ساخته)
+  const fileContent = fs.readFileSync(filePath, "utf-8");
 
-  return axios.post(url, formData);
+  if (!fileContent.trim()) {
+    return axios.post(`${BALE_API}/sendMessage`, {
+      chat_id: BALE_ADMIN_ID,
+      text: "⚠️ فایل خالی است.",
+    });
+  }
+
+  // بله مثل تلگرام محدودیت ۴۰۹۶ کاراکتر دارد، اگر متن بزرگ بود خردش می‌کنیم
+  if (fileContent.length <= 4096) {
+    return axios.post(`${BALE_API}/sendMessage`, {
+      chat_id: BALE_ADMIN_ID,
+      text: fileContent,
+    });
+  } else {
+    for (let i = 0; i < fileContent.length; i += 4000) {
+      await axios.post(`${BALE_API}/sendMessage`, {
+        chat_id: BALE_ADMIN_ID,
+        text: fileContent.slice(i, i + 4000),
+      });
+    }
+  }
 }
 
-// گوش دادن به دکمه‌های بله (Long Polling ساده مخصوص بله)
+// پولینگ بله
 export function startBaleBotPolling() {
   if (!BALE_TOKEN) return;
   let offset = 0;
@@ -57,49 +74,45 @@ export function startBaleBotPolling() {
   setInterval(async () => {
     try {
       const response = await axios.get(`${BALE_API}/getUpdates`, {
-        params: { offset, timeout: 30 },
+        params: { offset, timeout: 10 },
       });
 
       const updates = response.data?.result || [];
       for (const update of updates) {
         offset = update.update_id + 1;
 
-        // بررسی کلیک روی دکمه‌ها
         if (update.callback_query) {
           const cb = update.callback_query;
           const data = cb.data;
           const fromId = cb.from?.id;
 
-          // فقط به خودت پاسخ بده
           if (fromId !== BALE_ADMIN_ID) continue;
 
-          // تایید زدن دکمه
+          // پاسخ فوری به دکمه برای باز شدن قفل آن در بله
           await axios
             .post(`${BALE_API}/answerCallbackQuery`, {
               callback_query_id: cb.id,
             })
             .catch(() => {});
 
+          // ارسال متن کانفیگ‌ها بر اساس دکمه زده شده
           if (data === "bale_v2ray") {
-            await sendFileToBale(
+            await sendConfigContentText(
               path.resolve("./v2ray_configs.txt"),
-              "v2ray_configs.txt",
             ).catch((e) => logger.error(e.message));
           } else if (data === "bale_slipnet") {
-            await sendFileToBale(
+            await sendConfigContentText(
               path.resolve("./slipnet_configs.txt"),
-              "slipnet_configs.txt",
             ).catch((e) => logger.error(e.message));
           } else if (data === "bale_proxy") {
-            await sendFileToBale(
-              path.resolve("./proxy.txt"),
-              "proxy.txt",
-            ).catch((e) => logger.error(e.message));
+            await sendConfigContentText(path.resolve("./proxy.txt")).catch(
+              (e) => logger.error(e.message),
+            );
           }
         }
       }
     } catch (error: any) {
-      // خطاها را بی‌آزار لاگ کن تا ربات متوقف نشود
+      // نادیده گرفتن خطاهای نتورک یا تایم‌اوت پواینگ
     }
-  }, 3000);
+  }, 2000);
 }
