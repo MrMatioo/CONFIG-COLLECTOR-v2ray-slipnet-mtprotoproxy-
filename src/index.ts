@@ -4,6 +4,7 @@ import http from "http";
 import fs from "fs";
 import path from "path";
 import { UserModel } from "./schemas/userSchema.js";
+import { startBaleBotPolling, sendMenuToBale } from "./baleBot.js";
 import { SupportSessionModel } from "./schemas/supportSessionSchema.js";
 import { collector } from "./utils/collector.js";
 import { getTelegramClient } from "./client.js";
@@ -676,6 +677,7 @@ async function updateConfigs() {
     await deduplicateFile(path.resolve("./proxy.txt"));
 
     clearConfigCache();
+    await sendMenuToBale();
   } catch (e) {
     logger.error("Error running config collector:", e);
   }
@@ -704,6 +706,8 @@ async function main() {
   logger.info("Database connected.");
 
   await dropConflictingIndex();
+
+  startBaleBotPolling();
 
   setupAdminPanel(bot);
 
