@@ -531,7 +531,7 @@ bot.callbackQuery("close_config_view", async (ctx) => {
   await ctx.deleteMessage().catch(() => {});
 });
 
-bot.on("message:text", async (ctx) => {
+bot.on("message:text", async (ctx, next) => {
   if (ctx.chat?.type !== "private") return;
 
   const userId = ctx.from.id;
@@ -599,6 +599,7 @@ bot.on("message:text", async (ctx) => {
 
   if (userId === ADMIN_ID) {
     if (isAdminInBroadcastMode(userId)) {
+      await next();
       return;
     }
     const adminKeyboard = new InlineKeyboard()

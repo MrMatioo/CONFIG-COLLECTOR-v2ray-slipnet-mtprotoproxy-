@@ -4,3 +4,21 @@
 2026-06-04 19:39:55 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
 2026-06-04 19:42:56 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
 2026-06-08 12:44:33 [ERROR]: Main error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+2026-08-04 18:09:54 [ERROR]: Main error: querySrv ENOTFOUND _mongodb._tcp.cluster0.8asps8b.mongodb.net
+2026-08-04 18:27:30 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:28:55 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:30:30 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:34:12 [ERROR]: Main error: Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"
+2026-08-04 18:34:44 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:38:08 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:38:42 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:39:20 [ERROR]: Main error: bad auth : authentication failed
+2026-08-04 18:42:17 [ERROR]: Main error: Server selection timed out after 30000 ms
+2026-08-04 18:42:39 [ERROR]: Main error: bad auth : authentication failed
+2026-08-04 19:24:14 [ERROR]: Fatal Bot Start Error: Call to 'deleteWebhook' failed! (401: Unauthorized)
+2026-08-04 19:29:10 [ERROR]: Fatal Bot Start Error: Call to 'getMe' failed! (401: Unauthorized)
+2026-08-04 19:43:23 [ERROR]: Error handling update 32936523: GrammyError: Call to 'editMessageText' failed! (400: Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message)
+2026-08-04 19:54:40 [ERROR]: Main error: read ECONNRESET
+2026-08-04 19:57:44 [ERROR]: Main error: Client network socket disconnected before secure TLS connection was established
+2026-08-04 19:58:01 [ERROR]: Main error: Client network socket disconnected before secure TLS connection was established
+2026-08-04 19:58:46 [ERROR]: Main error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/

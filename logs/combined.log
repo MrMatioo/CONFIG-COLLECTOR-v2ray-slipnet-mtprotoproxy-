@@ -11,3 +11,101 @@
 2026-06-04 19:42:56 [ERROR]: Main error: queryTxt ESERVFAIL cluster0.8asps8b.mongodb.net
 2026-06-08 12:44:00 [INFO]: Fake web server listening on port 3000.
 2026-06-08 12:44:33 [ERROR]: Main error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+2026-08-04 18:09:53 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:09:54 [ERROR]: Main error: querySrv ENOTFOUND _mongodb._tcp.cluster0.8asps8b.mongodb.net
+2026-08-04 18:27:30 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:27:30 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:28:55 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:28:55 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:30:30 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:30:30 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:34:12 [ERROR]: Main error: Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"
+2026-08-04 18:34:12 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:34:44 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:34:44 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:38:08 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:38:08 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:38:42 [ERROR]: Main error: Password contains unescaped characters
+2026-08-04 18:38:42 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:39:07 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:39:20 [ERROR]: Main error: bad auth : authentication failed
+2026-08-04 18:41:44 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:42:17 [ERROR]: Main error: Server selection timed out after 30000 ms
+2026-08-04 18:42:29 [INFO]: Fake web server listening on port 3000.
+2026-08-04 18:42:39 [ERROR]: Main error: bad auth : authentication failed
+2026-08-04 19:22:56 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:22:58 [INFO]: Database connected.
+2026-08-04 19:22:59 [INFO]: Bot started successfully.
+2026-08-04 19:23:26 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:23:29 [INFO]: Database connected.
+2026-08-04 19:23:31 [INFO]: Bot started successfully.
+2026-08-04 19:23:59 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:24:05 [INFO]: Database connected.
+2026-08-04 19:24:07 [INFO]: Bot started successfully.
+2026-08-04 19:24:14 [ERROR]: Fatal Bot Start Error: Call to 'deleteWebhook' failed! (401: Unauthorized)
+2026-08-04 19:24:42 [INFO]: Collecting configs...
+2026-08-04 19:24:53 [INFO]: Collection finished.
+2026-08-04 19:24:53 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (162 -> 84 lines)
+2026-08-04 19:24:53 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (12 -> 8 lines)
+2026-08-04 19:24:53 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (34 -> 20 lines)
+2026-08-04 19:24:53 [INFO]: Config cache cleared
+2026-08-04 19:26:54 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:27:01 [INFO]: Database connected.
+2026-08-04 19:27:03 [INFO]: Bot started successfully.
+2026-08-04 19:27:05 [INFO]: Collecting configs...
+2026-08-04 19:27:17 [INFO]: Collection finished.
+2026-08-04 19:27:17 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (162 -> 84 lines)
+2026-08-04 19:27:17 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (12 -> 8 lines)
+2026-08-04 19:27:17 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (34 -> 20 lines)
+2026-08-04 19:27:17 [INFO]: Config cache cleared
+2026-08-04 19:29:10 [ERROR]: Fatal Bot Start Error: Call to 'getMe' failed! (401: Unauthorized)
+2026-08-04 19:30:07 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:30:15 [INFO]: Database connected.
+2026-08-04 19:30:17 [INFO]: Bot started successfully.
+2026-08-04 19:30:19 [INFO]: Collecting configs...
+2026-08-04 19:30:30 [INFO]: Collection finished.
+2026-08-04 19:30:30 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (162 -> 84 lines)
+2026-08-04 19:30:30 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (12 -> 8 lines)
+2026-08-04 19:30:30 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (34 -> 20 lines)
+2026-08-04 19:30:30 [INFO]: Config cache cleared
+2026-08-04 19:43:23 [ERROR]: Error handling update 32936523: GrammyError: Call to 'editMessageText' failed! (400: Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message)
+2026-08-04 19:53:29 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:54:05 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:54:40 [ERROR]: Main error: read ECONNRESET
+2026-08-04 19:54:58 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:57:26 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:57:44 [ERROR]: Main error: Client network socket disconnected before secure TLS connection was established
+2026-08-04 19:57:55 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:58:01 [ERROR]: Main error: Client network socket disconnected before secure TLS connection was established
+2026-08-04 19:58:12 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:58:46 [ERROR]: Main error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+2026-08-04 19:59:01 [INFO]: Fake web server listening on port 3000.
+2026-08-04 19:59:05 [INFO]: Database connected.
+2026-08-04 19:59:06 [INFO]: Bot started successfully.
+2026-08-04 19:59:07 [INFO]: Collecting configs...
+2026-08-04 19:59:12 [INFO]: Collection finished.
+2026-08-04 19:59:12 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (166 -> 86 lines)
+2026-08-04 19:59:12 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (12 -> 8 lines)
+2026-08-04 19:59:12 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (34 -> 20 lines)
+2026-08-04 19:59:12 [INFO]: Config cache cleared
+2026-08-04 19:59:32 [INFO]: Support message from 7983932104 forwarded to admin
+2026-08-04 19:59:44 [INFO]: Admin replied to user 7983932104
+2026-08-04 20:59:07 [INFO]: Collecting configs...
+2026-08-04 21:00:00 [INFO]: Fake web server listening on port 3000.
+2026-08-04 21:00:07 [INFO]: Database connected.
+2026-08-04 21:00:08 [INFO]: Bot started successfully.
+2026-08-04 21:00:09 [INFO]: Collecting configs...
+2026-08-04 21:00:20 [INFO]: Collection finished.
+2026-08-04 21:00:20 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (162 -> 84 lines)
+2026-08-04 21:00:20 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (14 -> 10 lines)
+2026-08-04 21:00:20 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (34 -> 20 lines)
+2026-08-04 21:00:20 [INFO]: Config cache cleared
+2026-08-04 21:41:40 [INFO]: Fake web server listening on port 3000.
+2026-08-04 21:42:05 [INFO]: Database connected.
+2026-08-04 21:42:08 [INFO]: Bot started successfully.
+2026-08-04 21:42:10 [INFO]: Collecting configs...
+2026-08-04 21:42:18 [INFO]: Collection finished.
+2026-08-04 21:42:18 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\v2ray_configs.txt (164 -> 85 lines)
+2026-08-04 21:42:18 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\slipnet_configs.txt (14 -> 10 lines)
+2026-08-04 21:42:18 [INFO]: Deduplicated: C:\Users\ASMAN RAYANEH\Desktop\CONFIG-COLLECTOR-v2ray-slipnet-mtprotoproxy-\proxy.txt (28 -> 17 lines)
+2026-08-04 21:42:18 [INFO]: Config cache cleared
